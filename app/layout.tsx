@@ -9,15 +9,16 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import React from "react";
+import { ThemeProvider } from "@/context/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "StackOverflow",
   description:
     "A community-driven platform for asking and answering programming questions. Get help, share knowledge, and collaborate with developers from around the world.",
-  icons:{
-    icon:''
-  }
-  };
+  icons: {
+    icon: "",
+  },
+};
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,19 +38,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`${inter.variable} ${spaceGrotest.variable}`}>
+    <html lang="en">
+      <body className={`${inter.variable} ${spaceGrotest.variable}`}>
+        <ClerkProvider>
           <SignedOut>
             <SignInButton />
           </SignedOut>
           <SignedIn>
             <UserButton />
           </SignedIn>
-          <h1 className="h1-bold">THis is h1</h1>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
