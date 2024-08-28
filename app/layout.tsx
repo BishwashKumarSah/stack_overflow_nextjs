@@ -1,9 +1,5 @@
 import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
+  ClerkProvider 
 } from "@clerk/nextjs";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -41,12 +37,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${spaceGrotest.variable}`}>
         <ClerkProvider>
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+          
           <ThemeProvider>{children}</ThemeProvider>
         </ClerkProvider>
       </body>

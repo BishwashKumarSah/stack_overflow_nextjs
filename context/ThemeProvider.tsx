@@ -9,36 +9,41 @@ import {
 
 interface ThemeContextType {
   mode: string;
-  toggleTheme: () => void;
+  setMode: (mode: string) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<string>("light");
+  const [mode, setMode] = useState<string>("");
 
   const toggleTheme = () => {
-    setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme:dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   };
 
   useEffect(() => {
-    document.documentElement.classList.add(mode);
-    document.documentElement.classList.remove(
-      mode === "light" ? "dark" : "light"
-    );
+    toggleTheme();
   }, [mode]);
 
   return (
-    <ThemeContext.Provider value={{ mode, toggleTheme }}>
+    <ThemeContext.Provider value={{ mode, setMode }}>
       {children}
     </ThemeContext.Provider>
   );
 }
 
-export const useCustomTheme = () => {
+export default function useCustomTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
-};
+}
