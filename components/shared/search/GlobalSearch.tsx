@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 const GlobalSearch = () => {
   const handleSearchInput = () => {};
   return (
-    <div className="background-light800_dark400 relative w-full max-w-[600px] rounded-xl border-2 border-none px-3 py-4 outline-none max-lg:hidden">
+    <div className="background-light800_dark400 relative w-full max-w-[600px] rounded-xl  border-none px-3 py-2 outline-none max-lg:hidden">
       <div className="flex">
         <Image
           src="/assets/icons/search.svg"
