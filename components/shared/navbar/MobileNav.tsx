@@ -21,8 +21,7 @@ export const NavContent = () => {
   return (
     <section className="mt-5 flex flex-1 flex-col gap-3">
       {sidebarLinks.map((item) => {
-        const isActive =
-          (item.route && pathName.includes(item.route)) ||
+        const isActive =         
           pathName === item.route;
         return (
           <SheetClose asChild key={item.label}>

@@ -34,15 +34,15 @@ const questions: QuestionCardProps[] = [
       { _id: "1", name: "react" },
       { _id: "2", name: "sql" },
     ],
-    votes: 3,
+    votes: 2000,
     answers: [],
-    views: 32,
+    views: 4000000,
     author: {
       _id: "1",
       name: "Bishwash Kumar Sah",
       picture: "/path/to/picture.jpg",
     },
-    createdAt: new Date("1975-08-19T23:15:30Z"),
+    createdAt: new Date("2024-08-23T10:00:00Z"),
   },
   {
     _id: "2",
@@ -51,15 +51,15 @@ const questions: QuestionCardProps[] = [
       { _id: "1", name: "react" },
       { _id: "2", name: "sql" },
     ],
-    votes: 3,
+    votes: 2345,
     answers: [],
-    views: 32,
+    views: 2345234,
     author: {
-      _id: "2",
-      name: "Bishwash Sah",
+      _id: "1",
+      name: "Bishwash Kumar Sah",
       picture: "/path/to/picture.jpg",
     },
-    createdAt: new Date("1975-08-19T23:15:30Z"),
+    createdAt: new Date("2024-08-29T10:00:00Z"),
   },
 ];
 
@@ -88,7 +88,7 @@ const Home = () => {
         />
       </div>
       <HomeFilters />
-      <div className="flex flex-col w-full gap-6">
+      <div className="flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => {
             return (
