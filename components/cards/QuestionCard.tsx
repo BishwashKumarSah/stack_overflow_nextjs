@@ -46,9 +46,9 @@ const QuestionCard = ({
       </div>
       <div className="flex flex-wrap gap-5">
         {tags.length > 0 &&
-          tags.map((tag) => {
-            return <RenderTags title={tag.name} _id={tag._id} key={tag._id} />;
-          })}
+          tags.map((tag) => (
+            <RenderTags key={tag._id} title={tag.name} _id={tag._id} />
+          ))}
       </div>
       {/* <div className="mt-3  flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 ">

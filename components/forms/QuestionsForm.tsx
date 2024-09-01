@@ -36,6 +36,8 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  console.log("pathnameQuestionsForm", pathname);
+
   const handleRemoveBadge = (tag: string, field: any) => {
     // const badgeValue = e.currentTarget.getAttribute("data-tag");
     // e.preventDefault();
@@ -112,6 +114,7 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
         description: values.description,
         tags: values.tags,
         author: JSON.parse(mongoUserId),
+        path: pathname,
       });
 
       router.push("/");
