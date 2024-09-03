@@ -1,5 +1,7 @@
+import { IUser } from "@/database/user.model";
+// import { IUser as IUserFromMongodb } from "@/mongodb";
 import { Schema } from "mongoose";
-import { IUser } from "@/mongodb";
+
 
 // Interface for creating an answer
 export interface CreateAnswerParams {

@@ -53,7 +53,7 @@ export async function createQuestion(params: CreateQuestionParams) {
     await Question.findByIdAndUpdate(question._id, {
       $push: { tags: { $each: tagDocument } },
     });
-    console.log("Patttth", path);
+    
     revalidatePath(path);
   } catch (error) {}
 }
