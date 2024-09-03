@@ -58,6 +58,7 @@ const RightSideBar = () => {
             Tags.map((tag) => {
               return (
                 <RenderTags
+                  key={tag._id}
                   title={tag.title}
                   _id={tag._id}
                   questionsCount={tag.totalNumberOfQuestions}
