@@ -63,7 +63,7 @@ const LeftSideBar = () => {
               />
             </SignUpButton>
             <SignUpButton>
-              <button className="max-md:hidden">Sign in</button>
+              <button className="max-md:hidden">Sign Up</button>
             </SignUpButton>
           </div>
         </div>
