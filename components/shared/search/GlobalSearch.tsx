@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 const GlobalSearch = () => {
   const handleSearchInput = () => {};
   return (
-    <div className="background-light800_dark400 relative w-full max-w-[600px] rounded-xl border-2 border-none px-3 py-4 outline-none max-lg:hidden">
+    <div className="background-light800_dark400 relative w-full max-w-[600px] rounded-xl  border-none px-3 py-2 outline-none max-lg:hidden">
       <div className="flex">
         <Image
           src="/assets/icons/search.svg"
@@ -20,7 +20,7 @@ const GlobalSearch = () => {
           value=""
           onChange={(e) => handleSearchInput()}
           placeholder="Search anything globally..."
-          className="paragraph-medium dark:caret-white placeholder background-light800_dark400 bg-transparent border-0 focus-visible:ring-offset-0 focus-visible:ring-0 no-focus min-h-full"
+          className="paragraph-medium placeholder background-light800_dark400 no-focus text-dark100_light900 min-h-full border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 dark:caret-white"
         />
       </div>
     </div>
