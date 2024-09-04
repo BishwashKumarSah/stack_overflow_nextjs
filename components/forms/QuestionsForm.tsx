@@ -135,7 +135,7 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="title"
+                  placeholder="Title"
                   className="paragraph-medium placeholder background-light800_dark400 text-dark100_light900 no-focus min-h-[56px] border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 dark:caret-white"
                   {...field}
                 />

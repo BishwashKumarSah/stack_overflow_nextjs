@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.3.3",
+    "@clerk/nextjs": "^5.4.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-label": "^2.1.0",
@@ -23,11 +23,13 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-tailwindcss": "^3.17.4",
+    "html-react-parser": "^5.1.15",
     "lucide-react": "^0.436.0",
     "mongodb": "^6.8.0",
     "mongoose": "^8.6.0",
     "next": "14.2.6",
     "prettier": "^3.3.3",
+    "prismjs": "^1.29.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
@@ -38,6 +40,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/prismjs": "^1.26.4",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18",
     "eslint": "^8",

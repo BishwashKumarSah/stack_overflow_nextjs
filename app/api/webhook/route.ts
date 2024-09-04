@@ -54,9 +54,7 @@ export async function POST(req: Request) {
   // For this guide, you simply log the payload to the console
 
   const eventType = evt.type;
-
-  console.log("The WebHoooooookkkkkkkkkkkk eventType", eventType);
-
+  
   if (eventType === "user.created") {
     const { first_name, id, last_name, username, email_addresses, image_url } =
       evt.data;

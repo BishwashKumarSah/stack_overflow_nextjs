@@ -27,8 +27,8 @@ const Filter = ({ filters, otherClasses }: HomePageFilterProps) => {
           <SelectValue placeholder="Select a Filter" />
         </div>
       </SelectTrigger>
-      <SelectContent>
-        <SelectGroup className="px-1 background-light900_dark300">
+      <SelectContent className="background-light900_dark200 w-full ring-offset-0">
+        <SelectGroup>
           {filters &&
             filters.map((item) => {
               return (
