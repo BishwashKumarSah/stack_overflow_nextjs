@@ -101,7 +101,7 @@ const QuestionCard = ({
       </div> */}
       <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-2">
         <Metric
-          imgUrl="/assets/icons/avatar.svg"
+          imgUrl={author.picture}
           title={`• ${getTimesAgo(createdAt)}`}
           value={author.name}
           alt="avatar"

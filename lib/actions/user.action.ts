@@ -5,11 +5,24 @@ import { connectToDatabase } from "../connectToDb";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   GetUserByIdParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
+
+export const getAllUsers = async (params: GetAllUsersParams) => {
+  try {
+    connectToDatabase();
+    // const { page, pageSize, filter, searchQuery } = params;
+    const allUsers = await User.find({}).sort({ createdAt: -1 });
+    return { allUsers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 export const getUserById = async (params: GetUserByIdParams) => {
   try {

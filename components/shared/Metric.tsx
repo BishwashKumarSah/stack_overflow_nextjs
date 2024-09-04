@@ -32,7 +32,7 @@ const Metric = ({
           width={16}
           height={16}
           alt={alt}
-          className={`${href ? "invert-colors rounded-full" : ""}`}
+          className={`${href ? "block rounded-full object-contain" : "invert-colors "}`}
         />
         <p className={`${otherClasses} flex items-center gap-1`}>
           {isAuthor ? value : displayValue}
@@ -54,7 +54,7 @@ const Metric = ({
   }
 
   return (
-    <div className="flex-center gap-2">
+    <div className="flex-center gap-1.5">
       <MetricContent />
     </div>
   );

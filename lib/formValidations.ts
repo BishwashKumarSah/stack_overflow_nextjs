@@ -13,3 +13,7 @@ export const QuestionsSchema = z.object({
     .min(1, "Tags must contain at least 1 element(s)")
     .max(10, "Tags must contain at most 10 element(s)"),
 });
+
+export const AnswerSchema = z.object({
+  answer: z.string().min(30),
+});
