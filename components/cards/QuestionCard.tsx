@@ -2,7 +2,7 @@ import React from "react";
 import RenderTags from "../shared/RenderTags";
 import Link from "next/link";
 import Metric from "../shared/Metric";
-import { getTimesAgo } from "@/lib/utils";
+import { formatNumber, getTimesAgo } from "@/lib/utils";
 
 interface QuestionCardProps {
   _id: string;
@@ -113,7 +113,7 @@ const QuestionCard = ({
           <Metric
             imgUrl="/assets/icons/like.svg"
             title=" Votes"
-            value={votes}
+            value={formatNumber(votes)}
             alt="votes"
             otherClasses="text-dark400_light800 small-medium"
           />

@@ -8,10 +8,18 @@ import Image from "next/image";
 import React from "react";
 import { auth } from "@clerk/nextjs/server";
 import { getUserById } from "@/lib/actions/user.action";
+import AllAnswers from "@/components/shared/AllAnswers";
+import Voting from "@/components/shared/Voting";
 
 const QuestionDetails = async ({ params, searchParams }) => {
   const QuestionDetails = await getQuestionsById({ questionId: params.id });
-  console.log({ QuestionDetails });
+  if (!QuestionDetails) {
+    return (
+      <h1 className="h1-bold text-dark100_light900 text-center">
+        No Questions Found
+      </h1>
+    );
+  }
 
   const { userId: clerkId }: { userId: string | null } = auth();
   let mongoUser;
@@ -23,20 +31,31 @@ const QuestionDetails = async ({ params, searchParams }) => {
       <div className="flex w-full flex-col-reverse justify-between sm:flex-row">
         <div className="flex-start flex items-center gap-2 ">
           <Image
-            src={QuestionDetails?.author?.picture}
+            src={QuestionDetails.author.picture}
             width={22}
             height={22}
             className="rounded-full"
             alt="Profile"
           />
           <p className="paragraph-semibold text-dark300_light700">
-            {QuestionDetails?.author?.name}
+            {QuestionDetails.author.name}
           </p>
         </div>
-        <div className="text-dark100_light900 flex justify-end ">Voting</div>
+        <div className="text-dark100_light900 flex justify-end ">
+          <Voting
+            type="Question"
+            itemId={JSON.stringify(QuestionDetails._id)}
+            userId={JSON.stringify(mongoUser._id)}
+            upvotes={QuestionDetails.upvotes.length}
+            hasUpvoted={QuestionDetails.upvotes.includes(mongoUser._id)}
+            hasDownvoted={QuestionDetails.downvotes.includes(mongoUser._id)}
+            downvotes={QuestionDetails.downvotes.length}
+            hasSaved={mongoUser.saved.includes(QuestionDetails._id)}
+          />
+        </div>
       </div>
       <div className="flex flex-col">
-        <h2 className="h2-bold text-dark100_light900 mt-3">
+        <h2 className="h2-bold text-dark100_light900 mt-11">
           {QuestionDetails.title}
         </h2>
         <div className="mt-3 flex items-center gap-4">
@@ -69,6 +88,12 @@ const QuestionDetails = async ({ params, searchParams }) => {
           return <RenderTags key={tag._id} title={tag.name} _id={tag._id} />;
         })}
       </div>
+
+      <AllAnswers
+        questionId={QuestionDetails._id}
+        questionCount={QuestionDetails.answers.length}
+        userId={mongoUser._id}
+      />
       <AnswerForm
         question={QuestionDetails.description}
         questionId={JSON.stringify(QuestionDetails._id)}

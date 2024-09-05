@@ -38,7 +38,9 @@ const ParseHTML = ({ content }: Params) => {
   }, []);
 
   return (
-    <div className="markdown mt-9 w-full min-w-full">{parse(content)}</div>
+    <div className="markdown mt-9 w-full min-w-full break-words">
+      {parse(content)}
+    </div>
   );
 };
 

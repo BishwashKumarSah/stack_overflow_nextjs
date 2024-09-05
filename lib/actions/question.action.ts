@@ -7,6 +7,7 @@ import {
   CreateQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
+  QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
@@ -33,12 +34,12 @@ export async function getQuestionsById(params: GetQuestionByIdParams) {
       .populate({
         path: "tags",
         model: Tag,
-        // select: "_id name",
+        select: "_id name",
       })
       .populate({
         path: "author",
         model: User,
-        // select: "_id clerkId name picture ",
+        select: "_id clerkId name picture ",
       });
     return questionDetails;
   } catch (error) {
@@ -81,5 +82,70 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
 
     revalidatePath(path);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function upVoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase();
+    const { userId, questionId, hasDownVoted, hasUpVoted, path } = params;
+    let QueryObj = {};
+
+    if (hasUpVoted) {
+      QueryObj = { $pull: { upvotes: userId } };
+    } else if (hasDownVoted) {
+      QueryObj = { $pull: { downvotes: userId }, $push: { upvotes: userId } };
+    } else {
+      QueryObj = { $addToSet: { upvotes: userId } };
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, QueryObj, {
+      new: true,
+    });
+
+    if (!question) {
+      throw new Error("Question Not Found!");
+    }
+
+    // TODO: Increase the reputation
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function downVoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase();
+    const { userId, questionId, hasDownVoted, hasUpVoted, path } = params;
+    let QueryObj = {};
+
+    if (hasDownVoted) {
+      QueryObj = { $pull: { downvotes: userId } };
+    } else if (hasUpVoted) {
+      QueryObj = { $pull: { upvotes: userId }, $push: { downvotes: userId } };
+    } else {
+      QueryObj = { $addToSet: { downvotes: userId } };
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, QueryObj, {
+      new: true,
+    });
+
+    if (!question) {
+      throw new Error("Question Not Found!");
+    }
+
+    // TODO: Increase the reputation
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }

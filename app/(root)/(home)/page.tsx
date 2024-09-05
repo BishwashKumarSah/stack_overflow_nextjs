@@ -82,7 +82,7 @@ const Home = async () => {
                 _id={question._id}
                 title={question.title}
                 tags={question.tags}
-                votes={question.votes}
+                votes={question.upvotes.length}
                 answers={question.answers}
                 views={question.views}
                 author={question.author}

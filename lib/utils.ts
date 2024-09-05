@@ -60,6 +60,6 @@ export function formatNumber(value: number): string {
   } else if (value >= 1_000) {
     return (value / 1_000).toFixed(1) + "K"; // Thousand
   } else {
-    return value.toString(); // Less than a thousand
+    return value?.toString(); // Less than a thousand
   }
 }
