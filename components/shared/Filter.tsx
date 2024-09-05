@@ -14,7 +14,7 @@ interface HomePageFilterProps {
     name: string;
     value: string;
   }[];
-  otherClasses: string;
+  otherClasses?: string;
 }
 
 const Filter = ({ filters, otherClasses }: HomePageFilterProps) => {

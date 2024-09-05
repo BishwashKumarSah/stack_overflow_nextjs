@@ -21,6 +21,7 @@ import { QuestionsSchema } from "@/lib/formValidations";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
+import useCustomTheme from "@/context/ThemeProvider";
 
 interface Props {
   mongoUserId: string;
@@ -30,6 +31,7 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
   const editorRef = useRef(null);
 
   const type: any = "Create";
+  const { mode } = useCustomTheme();
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -159,6 +161,7 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
               </FormLabel>
               <FormControl>
                 <Editor
+                  key={mode}
                   apiKey={process.env.NEXT_PUBLIC_TINY_API_KEY}
                   // @ts-ignore
                   onInit={(_evt, editor) => (editorRef.current = editor)}
@@ -200,6 +203,12 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
                         color: black;
                       }                      
                     `,
+                    skin:
+                      mode === "dark" || mode === "system"
+                        ? "oxide-dark"
+                        : "oxide",
+                    content_css:
+                      mode === "dark" || mode === "system" ? "dark" : "light",
                   }}
                 />
               </FormControl>

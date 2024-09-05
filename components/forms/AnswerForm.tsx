@@ -130,7 +130,7 @@ const AnswerForm = (params: Props) => {
                       content_style: `
                       body { 
                         font-family:Inter,Arial,sans-serif; 
-                        font-size:18px;                        
+                        font-size:16px;                        
                         color: black;
                       }                               
                     `,

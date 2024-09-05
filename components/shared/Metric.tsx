@@ -23,8 +23,8 @@ const Metric = ({
   alt,
 }: MetricProps) => {
   const MetricContent = () => {
-    const displayValue =
-      typeof value === "number" ? formatNumber(value) : value;
+    const displayValue = value;
+ 
     return (
       <>
         <Image
