@@ -2,8 +2,13 @@
 
 import User from "@/database/user.model";
 import { connectToDatabase } from "../connectToDb";
-import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared.types";
+import {
+  GetAllTagsParams,
+  GetQuestionsByTagIdParams,
+  GetTopInteractedTagsParams,
+} from "./shared.types";
 import Tag from "@/database/tag.model";
+import Question from "@/database/question.model";
 
 export const getTopInteractedTags = async (
   params: GetTopInteractedTagsParams
@@ -36,6 +41,38 @@ export const getAllTags = async (params: GetAllTagsParams) => {
 
     const allTags = await Tag.find({});
     return { allTags };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const GetQuestionsByTagId = async (
+  params: GetQuestionsByTagIdParams
+) => {
+  connectToDatabase();
+  try {
+    // const { userId, limit = 3 } = params;
+    const { tagId, page = 1, pageSize = 10, searchQuery } = params;
+
+    const tagQuestions = await Tag.findById(tagId).populate({
+      path: "questions",
+      model: Question,
+      match: searchQuery
+        ? { title: { $regex: searchQuery, $options: "i" } }
+        : {},
+      options: {
+        sort: { createdAt: -1 },
+      },
+      populate: [
+        { path: "tags", model: Tag, select: "_id name" },
+        { path: "author", model: User, select: "_id clerkId name picture" },
+      ],
+    });
+    if (!tagQuestions) {
+      throw new Error("Tags Not Found!");
+    }
+    return { tagTitle: tagQuestions.name, questions: tagQuestions.questions };
   } catch (error) {
     console.log(error);
     throw error;

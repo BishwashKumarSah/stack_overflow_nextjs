@@ -2,7 +2,6 @@ import { IUser } from "@/database/user.model";
 // import { IUser as IUserFromMongodb } from "@/mongodb";
 import { Schema } from "mongoose";
 
-
 // Interface for creating an answer
 export interface CreateAnswerParams {
   content: string;
@@ -51,6 +50,7 @@ export interface RecommendedParams {
 // Interface for viewing a question with an optional user ID
 export interface ViewQuestionParams {
   questionId: string;
+  path: string;
   userId?: string;
 }
 

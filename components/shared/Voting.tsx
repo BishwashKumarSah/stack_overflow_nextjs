@@ -1,5 +1,6 @@
 "use client";
 import { downVoteAnswer, upVoteAnswer } from "@/lib/actions/answer.action";
+import { countViews } from "@/lib/actions/interaction.action";
 import {
   downVoteQuestion,
   upVoteQuestion,
@@ -8,7 +9,7 @@ import { saveQuestion } from "@/lib/actions/user.action";
 import { formatNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 interface Props {
   type: string;
   itemId: string;
@@ -83,6 +84,21 @@ const Voting = ({
     }
   };
 
+  useEffect(() => {
+    // Prevent calling countViews if no itemId or userId is present
+    if (!itemId) return;
+
+    const updateViews = async () => {
+      await countViews({
+        questionId: JSON.parse(itemId),
+        userId: userId ? JSON.parse(userId) : undefined,
+        path: pathname,
+      });
+    };
+
+    updateViews();
+  }, [itemId, userId, pathname]);
+
   return (
     <div className="flex items-center gap-5">
       <div className="flex items-center gap-2">
@@ -146,3 +162,4 @@ const Voting = ({
 };
 
 export default Voting;
+  
