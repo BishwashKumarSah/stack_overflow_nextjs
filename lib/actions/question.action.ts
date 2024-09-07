@@ -7,6 +7,7 @@ import {
   CreateQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
+  GetUserStatsParams,
   QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
@@ -144,6 +145,42 @@ export async function downVoteQuestion(params: QuestionVoteParams) {
     // TODO: Increase the reputation
 
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const totalQuestions = await Question.countDocuments({ author: userId });
+    const questions = await Question.find({ author: userId })
+      .populate({ path: "tags", model: Tag, select: "_id name" })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id name username clerkId picture",
+      });
+
+    // ? If we use a - b then it will sort in ascending but b-a will sort in descending
+    // ? Picks two elements, a and b.
+    // ? The function checks the length of b.scores and subtracts the length of a.scores.
+    // ? If the result is positive, b should come before a (meaning b has more scores than a).
+    // ? If the result is negative, a should come before b (meaning a has more scores than b).
+    // ? If the result is zero, their order stays the same.
+
+    questions.sort((a, b) => {
+      // First, compare by views
+      if (b.views !== a.views) {
+        return b.views - a.views;
+      }
+      // If views are equal, compare by the number of upvotes
+      return b.upvotes.length - a.upvotes.length;
+    });
+    return { totalQuestions, Questions: questions };
   } catch (error) {
     console.log(error);
     throw error;

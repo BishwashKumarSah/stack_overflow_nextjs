@@ -63,3 +63,12 @@ export function formatNumber(value: number): string {
     return value?.toString(); // Less than a thousand
   }
 }
+
+export const getYearMonth = (date:Date) => { 
+
+  // Get the month and year
+  const month = date.toLocaleString("default", { month: "long" }); // "long" for full month name (e.g., "September")
+  const year = date.getFullYear(); // Get the year
+
+  return `${month} ${year}`;
+};

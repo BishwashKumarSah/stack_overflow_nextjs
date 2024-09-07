@@ -16,6 +16,7 @@ interface QuestionCardProps {
   views: number;
   author: {
     _id: string;
+    clerkId: string;
     name: string;
     picture: string;
   };
@@ -45,7 +46,7 @@ const QuestionCard = ({
         </Link>
       </div>
       <div className="flex flex-wrap gap-5">
-        {tags.length > 0 &&
+        {tags?.length > 0 &&
           tags.map((tag) => (
             <RenderTags key={tag._id} title={tag.name} _id={tag._id} />
           ))}
@@ -105,7 +106,7 @@ const QuestionCard = ({
           title={`• ${getTimesAgo(createdAt)}`}
           value={author.name}
           alt="avatar"
-          href={`/profile/${author._id}`}
+          href={`/profile/${author.clerkId}`}
           isAuthor
           otherClasses="text-dark400_light800 body-medium"
         />

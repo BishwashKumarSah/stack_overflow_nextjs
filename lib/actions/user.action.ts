@@ -12,11 +12,13 @@ import {
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
-import Question from "@/database/question.model";
-import { FilterQuery, model } from "mongoose";
-import { IQuestion } from "@/database/question.model";
-import path from "path";
+
+import { FilterQuery } from "mongoose";
+import Question, { IQuestion } from "@/database/question.model";
+
 import Tag from "@/database/tag.model";
+import Answer from "@/database/answer.model";
+import { redirect } from "next/navigation";
 
 export const getAllUsers = async (params: GetAllUsersParams) => {
   try {
@@ -44,7 +46,6 @@ export const getUserById = async (params: GetUserByIdParams) => {
 };
 
 // Action Trigger
-
 export const createUser = async (userData: CreateUserParams) => {
   try {
     connectToDatabase();
@@ -150,7 +151,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
 
     const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
 
-    let filterQuery: FilterQuery<IQuestion> = searchQuery
+    const filterQuery: FilterQuery<IQuestion> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
 
@@ -174,6 +175,30 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
     const savedQuestions = user.saved;
 
     return { questions: savedQuestions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// Get User Data
+export const getUserDetailsById = async (params: GetUserByIdParams) => {
+  try {
+    connectToDatabase();
+    const { userId } = params;
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      return redirect("/");
+    }
+
+    const totalQuestionsCount = await Question.countDocuments({
+      author: user._id,
+    });
+
+    const totalAnswersCount = await Answer.countDocuments({ author: user._id });
+
+    return { user, totalAnswersCount, totalQuestionsCount };
   } catch (error) {
     console.log(error);
     throw error;

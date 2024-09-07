@@ -6,9 +6,11 @@ import {
   AnswerVoteParams,
   CreateAnswerParams,
   GetAnswersParams,
+  GetUserStatsParams,
 } from "./shared.types";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
+import User from "@/database/user.model";
 
 export const createAnswer = async (params: CreateAnswerParams) => {
   try {
@@ -102,6 +104,26 @@ export async function downVoteAnswer(params: AnswerVoteParams) {
     // TODO: Increase the reputation
 
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 10 } = params;
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+    const answers = await Answer.find({ author: userId })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id clerkId name username picture",
+      })
+      .populate({ path: "question", model: Question, select: "_id title" });
+    answers.sort((a, b) => b.upvotes.length - a.upvotes.length);
+    return { totalAnswers, answers };
   } catch (error) {
     console.log(error);
     throw error;
