@@ -5,6 +5,7 @@ import { connectToDatabase } from "../connectToDb";
 import {
   AnswerVoteParams,
   CreateAnswerParams,
+  DeleteAnswerParams,
   GetAnswersParams,
   GetUserStatsParams,
 } from "./shared.types";
@@ -124,6 +125,19 @@ export async function getUserAnswers(params: GetUserStatsParams) {
       .populate({ path: "question", model: Question, select: "_id title" });
     answers.sort((a, b) => b.upvotes.length - a.upvotes.length);
     return { totalAnswers, answers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteAnswerById(params: DeleteAnswerParams) {
+  try {
+    const { answerId, path } = params;
+    await connectToDatabase();
+    await Answer.findOneAndDelete({ _id: answerId });
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;

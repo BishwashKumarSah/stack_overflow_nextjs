@@ -1,4 +1,7 @@
 import { Schema, models, model, Document } from "mongoose";
+import Answer from "./answer.model";
+import Interaction from "./interaction.model";
+import Tag from "./tag.model";
 
 export interface IQuestion extends Document {
   title: string;
@@ -61,6 +64,25 @@ const QuestionSchema = new Schema(
   },
   { timestamps: true }
 );
+
+QuestionSchema.post("findOneAndDelete", async function (doc) {
+  
+  if (doc) {
+  
+    await Answer.deleteMany({ _id: { $in: doc.answers } });
+    
+    await Interaction.deleteMany({ question: doc._id });
+ 
+    await Tag.updateMany(
+      { _id: { $in: doc.tags } },
+      { $pull: { questions: doc._id } }
+    );
+    const tagsWithNoQuestions = await Tag.find({ questions: { $size: 0 } });
+    const tagsToDelete = tagsWithNoQuestions.map((tag) => tag._id);
+    
+    await Tag.deleteMany({ _id: { $in: tagsToDelete } });
+  }
+});
 
 const Question =
   models.Question || model<IQuestion>("Question", QuestionSchema);

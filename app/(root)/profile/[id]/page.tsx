@@ -75,19 +75,20 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
           <TabsList className="background-light800_dark400 min-h-[42px] p-1.5">
             <TabsTrigger
               value="top_posts"
-              className="min-h-full rounded-md bg-light-800 dark:bg-dark-400 text-light-500 data-[state=active]:bg-primary-100 dark:data-[state=active]:bg-dark-300 data-[state=active]:text-primary-500 "
+              className="min-h-full rounded-md bg-light-800 text-light-500 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:bg-dark-400 dark:data-[state=active]:bg-dark-300 "
             >
               Top Posts
             </TabsTrigger>
             <TabsTrigger
               value="answers"
-              className="min-h-full rounded-md bg-light-800 dark:bg-dark-400 text-light-500 data-[state=active]:bg-primary-100 dark:data-[state=active]:bg-dark-300 data-[state=active]:text-primary-500 "
+              className="min-h-full rounded-md bg-light-800 text-light-500 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:bg-dark-400 dark:data-[state=active]:bg-dark-300 "
             >
               Answers
             </TabsTrigger>
           </TabsList>
           <TabsContent value="top_posts">
             <QuestionTab
+              clerkId={clerkId}
               userId={JSON.stringify(user._id)}
               page={1}
               pageSize={10}
@@ -95,6 +96,7 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
           </TabsContent>
           <TabsContent value="answers">
             <AnswerTab
+              clerkId={clerkId}
               userId={JSON.stringify(user._id)}
               page={1}
               pageSize={10}

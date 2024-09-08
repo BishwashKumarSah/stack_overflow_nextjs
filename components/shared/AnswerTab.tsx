@@ -1,30 +1,32 @@
 import { getUserAnswers } from "@/lib/actions/answer.action";
 import React from "react";
-import QuestionCard from "../cards/QuestionCard";
 import AnswerCard from "../cards/AnswerCard";
 
 interface AnswerTabProps {
+  clerkId?: string | null;
   userId: string;
   page?: number;
   pageSize?: number;
 }
 
 const AnswerTab = async (props: AnswerTabProps) => {
-  const { userId, page, pageSize } = props;
+  const { userId, page, pageSize, clerkId } = props;
   const { totalAnswers, answers } = await getUserAnswers({
     userId: JSON.parse(userId),
   });
+
   return (
     <>
       {answers.length > 0 ? (
         answers.map((answer) => {
           return (
             <AnswerCard
-              // clerkId: //! for later
+              clerkId={clerkId}
               key={answer._id}
+              answerId={answer._id}
               _id={answer.question._id}
-              title={answer.question.title}
-              votes={answer.upvotes.length}
+              title={answer.question?.title}
+              votes={answer.upvotes?.length}
               author={answer.author}
               createdAt={answer.createdAt}
             />

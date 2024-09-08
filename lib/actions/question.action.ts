@@ -5,6 +5,7 @@ import { connectToDatabase } from "../connectToDb";
 import Tag from "@/database/tag.model";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   GetUserStatsParams,
@@ -181,6 +182,19 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       return b.upvotes.length - a.upvotes.length;
     });
     return { totalQuestions, Questions: questions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteQuestionsById(params: DeleteQuestionParams) {
+  try {
+    const { questionId, path } = params;
+    await connectToDatabase();
+    await Question.findOneAndDelete({ _id: questionId });
+    //! Check the Question Schema for further deletion like tags,answers,interaction
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;

@@ -3,6 +3,8 @@ import RenderTags from "../shared/RenderTags";
 import Link from "next/link";
 import Metric from "../shared/Metric";
 import { formatNumber, getTimesAgo } from "@/lib/utils";
+import { SignedIn } from "@clerk/nextjs";
+import EditDeleteAction from "../shared/EditDeleteAction";
 
 interface QuestionCardProps {
   _id: string;
@@ -12,6 +14,7 @@ interface QuestionCardProps {
     name: string;
   }[];
   votes: number;
+  clerkId?: string | null;
   answers: Array<object>;
   views: number;
   author: {
@@ -26,6 +29,7 @@ interface QuestionCardProps {
 const QuestionCard = ({
   _id,
   title,
+  clerkId,
   tags,
   votes,
   answers,
@@ -33,17 +37,25 @@ const QuestionCard = ({
   author,
   createdAt,
 }: QuestionCardProps) => {
+  const showActionButtons = clerkId && clerkId === author.clerkId;
   return (
     <div className="card-wrapper mt-9 rounded-md px-6 py-4">
       <div className="flex w-full flex-col items-start ">
         <div className="subtle-regular text-light400_light500 hidden max-sm:flex">
           {getTimesAgo(createdAt)}
         </div>
-        <Link href={`/questions/${_id}`}>
-          <h3 className="sm:h3-semibold base-semibold text-dark100_light900 my-2 line-clamp-1">
-            {title}
-          </h3>
-        </Link>
+        <div className="flex w-full justify-between">
+          <Link href={`/questions/${_id}`}>
+            <h3 className="sm:h3-semibold base-semibold text-dark100_light900 my-2 line-clamp-1">
+              {title}
+            </h3>
+          </Link>
+          <SignedIn>
+            {showActionButtons && (
+              <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+            )}
+          </SignedIn>
+        </div>
       </div>
       <div className="flex flex-wrap gap-5">
         {tags?.length > 0 &&

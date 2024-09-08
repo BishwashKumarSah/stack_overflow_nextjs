@@ -3,10 +3,13 @@ import React from "react";
 import Link from "next/link";
 import Metric from "../shared/Metric";
 import { formatNumber, getTimesAgo } from "@/lib/utils";
+import { SignedIn } from "@clerk/nextjs";
+import EditDeleteAction from "../shared/EditDeleteAction";
 
 interface AnswerCardProps {
   _id: string;
   title: string;
+  clerkId?: string | null;
   votes: number;
   author: {
     _id: string;
@@ -14,27 +17,42 @@ interface AnswerCardProps {
     name: string;
     picture: string;
   };
+  answerId: string;
   createdAt: Date;
 }
 
 const AnswerCard = ({
   _id,
+  answerId,
+  clerkId,
   title,
   votes,
   author,
   createdAt,
 }: AnswerCardProps) => {
+  const showActionButtons = clerkId && clerkId === author.clerkId;
+
   return (
     <div className="card-wrapper mt-9 rounded-md px-6 py-4">
       <div className="flex w-full flex-col items-start ">
         <div className="subtle-regular text-light400_light500 hidden max-sm:flex">
           {getTimesAgo(createdAt)}
         </div>
-        <Link href={`/questions/${_id}`}>
-          <h3 className="sm:h3-semibold base-semibold text-dark100_light900 my-2 line-clamp-1">
-            {title}
-          </h3>
-        </Link>
+        <div className="flex w-full justify-between">
+          <Link href={`/questions/${_id}`}>
+            <h3 className="sm:h3-semibold base-semibold text-dark100_light900 my-2 line-clamp-1">
+              {title}
+            </h3>
+          </Link>
+          <SignedIn>
+            {showActionButtons && (
+              <EditDeleteAction
+                type="Answer"
+                itemId={JSON.stringify(answerId)}
+              />
+            )}
+          </SignedIn>
+        </div>
       </div>
 
       <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-2">

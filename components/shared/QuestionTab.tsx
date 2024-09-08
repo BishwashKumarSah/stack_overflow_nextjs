@@ -3,13 +3,14 @@ import React from "react";
 import QuestionCard from "../cards/QuestionCard";
 
 interface QuestionTabProps {
+  clerkId?: string | null;
   userId: string;
   page?: number;
   pageSize?: number;
 }
 
 const QuestionTab = async (props: QuestionTabProps) => {
-  const { userId, page, pageSize } = props;
+  const { userId, page, pageSize, clerkId } = props;
   const { totalQuestions, Questions: questions } = await getUserQuestions({
     userId: JSON.parse(userId),
   });
@@ -19,7 +20,7 @@ const QuestionTab = async (props: QuestionTabProps) => {
         questions.map((question) => {
           return (
             <QuestionCard
-              // clerkId: //! for later
+              clerkId={clerkId}
               key={question._id}
               _id={question._id}
               title={question.title}
