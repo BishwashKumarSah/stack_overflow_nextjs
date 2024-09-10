@@ -38,7 +38,7 @@ export const getUserById = async (params: GetUserByIdParams) => {
     const { userId } = params;
     const user = await User.findOne({ clerkId: userId });
     // console.log("user", user);
-    return user;
+    return { user };
   } catch (error) {
     console.log(error);
     throw error;
@@ -69,8 +69,9 @@ export const updateUser = async (params: UpdateUserParams) => {
     const updatedUser = await User.findOneAndUpdate({ clerkId }, updateData, {
       new: true,
     });
+
     revalidatePath(path);
-    return updatedUser;
+    return { updatedUser };
   } catch (error) {
     console.log(error);
     throw error;

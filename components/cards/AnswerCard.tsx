@@ -30,7 +30,8 @@ const AnswerCard = ({
   author,
   createdAt,
 }: AnswerCardProps) => {
-  const showActionButtons = clerkId && clerkId === author.clerkId;
+  const parsedClerkId = clerkId ? JSON.parse(clerkId) : "";
+  const showActionButtons = parsedClerkId && parsedClerkId === author.clerkId;
 
   return (
     <div className="card-wrapper mt-9 rounded-md px-6 py-4">

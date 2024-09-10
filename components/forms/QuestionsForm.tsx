@@ -25,19 +25,22 @@ import useCustomTheme from "@/context/ThemeProvider";
 
 interface Props {
   mongoUserId: string;
+  questionDetails?: string;
+  type: string;
 }
 
-const QuestionsForm = ({ mongoUserId }: Props) => {
+const QuestionsForm = ({ mongoUserId, questionDetails, type }: Props) => {
   const editorRef = useRef(null);
 
-  const type: any = "Create";
+  const parsedQuestionDetails = JSON.parse(questionDetails || "{}");
+  const groupedTags = parsedQuestionDetails.tags?.map((tag: any) => tag.name);
+
   const { mode } = useCustomTheme();
 
   const [submitting, setSubmitting] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
- 
 
   const handleRemoveBadge = (tag: string, field: any) => {
     // const badgeValue = e.currentTarget.getAttribute("data-tag");
@@ -99,9 +102,9 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      tags: [],
+      title: parsedQuestionDetails.title || "",
+      description: parsedQuestionDetails.description || "",
+      tags: groupedTags || [],
     },
   });
 
@@ -110,20 +113,33 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
     setSubmitting(true);
     try {
       // Make api call
-      await createQuestion({
-        title: values.title,
-        description: values.description,
-        tags: values.tags,
-        author: JSON.parse(mongoUserId),
-        path: pathname,
-      });
+      if (type === "Create") {
+        await createQuestion({
+          title: values.title,
+          description: values.description,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathname,
+        });
 
-      router.push("/");
+        router.push("/");
+      } else if (type === "Edit") {
+        await createQuestion({
+          title: values.title,
+          description: values.description,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathname,
+        });
+
+        router.push("/");
+      }
     } catch (error) {
     } finally {
       setSubmitting(false);
     }
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -165,7 +181,7 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
                   apiKey={process.env.NEXT_PUBLIC_TINY_API_KEY}
                   // @ts-ignore
                   onInit={(_evt, editor) => (editorRef.current = editor)}
-                  initialValue=""
+                  initialValue={parsedQuestionDetails.description || ""}
                   onBlur={() => {
                     field.onBlur(); // Trigger react-hook-form's onBlur
                     form.trigger("description"); // Manually trigger validation
@@ -231,6 +247,7 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
               <FormControl>
                 <>
                   <Input
+                    disabled={type === "Edit"}
                     placeholder="Add tags..."
                     className="paragraph-medium placeholder background-light800_dark400 text-dark100_light900 no-focus min-h-[56px] border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 dark:caret-white"
                     onKeyDown={(e) => handleEnterKeyDown(e, field)}
@@ -241,7 +258,7 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
                         <Badge
                           key={value}
                           title={value}
-                          className="background-light800_dark300 subtle-medium text-light400_light500 mt-1.5 select-none gap-2 rounded-lg px-4 py-2 capitalize"
+                          className={`background-light800_dark300 ${type === "Edit" ? "cursor-not-allowed" : "cursor-pointer"} subtle-medium text-light400_light500 mt-1.5 select-none gap-2 rounded-lg px-4 py-2 capitalize`}
                         >
                           {value}
                           <Image
@@ -250,8 +267,12 @@ const QuestionsForm = ({ mongoUserId }: Props) => {
                             width={12}
                             height={12}
                             data-tag={value}
-                            className="invert-colors cursor-pointer"
-                            onClick={(e) => handleRemoveBadge(value, field)}
+                            className={`invert-colors ${type === "Edit" ? "cursor-not-allowed" : "cursor-pointer"}`}
+                            onClick={(e) =>
+                              parsedQuestionDetails
+                                ? () => {}
+                                : handleRemoveBadge(value, field)
+                            }
                           />
                         </Badge>
                       ))}

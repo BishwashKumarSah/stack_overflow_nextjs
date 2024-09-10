@@ -36,12 +36,11 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
             <div className="mt-3 flex flex-wrap gap-4">
               <ProfileLink
                 title="Portfolio"
-                // href={user.portfolioWebsite}
-                href="bishwash"
+                href={user.portfolioWebsite}
                 imgUrl="/assets/icons/link.svg"
               />
               <ProfileLink
-                title="Bangalore" //! add dynamic location {user.location}
+                title={user.location}
                 imgUrl="/assets/icons/location.svg"
               />
               <ProfileLink
@@ -50,7 +49,7 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
               />
             </div>
             <p className="text-dark300_light700 paragraph-regular mt-3">
-              {"user.bio"}
+              {user.bio}
             </p>
           </div>
         </div>
@@ -88,7 +87,7 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
           </TabsList>
           <TabsContent value="top_posts">
             <QuestionTab
-              clerkId={clerkId}
+              clerkId={JSON.stringify(clerkId)}
               userId={JSON.stringify(user._id)}
               page={1}
               pageSize={10}
@@ -96,7 +95,7 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
           </TabsContent>
           <TabsContent value="answers">
             <AnswerTab
-              clerkId={clerkId}
+              clerkId={JSON.stringify(clerkId)}
               userId={JSON.stringify(user._id)}
               page={1}
               pageSize={10}

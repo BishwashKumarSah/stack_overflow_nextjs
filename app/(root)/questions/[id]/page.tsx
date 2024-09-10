@@ -10,8 +10,9 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserById } from "@/lib/actions/user.action";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Voting from "@/components/shared/Voting";
+import { URLProps } from "@/types";
 
-const QuestionDetails = async ({ params, searchParams }) => {
+const QuestionDetails = async ({ params, searchParams }: URLProps) => {
   const QuestionDetails = await getQuestionsById({ questionId: params.id });
   if (!QuestionDetails) {
     return (
@@ -24,7 +25,8 @@ const QuestionDetails = async ({ params, searchParams }) => {
   const { userId: clerkId }: { userId: string | null } = auth();
   let mongoUser;
   if (clerkId) {
-    mongoUser = await getUserById({ userId: clerkId });
+    const { user } = await getUserById({ userId: clerkId });
+    mongoUser = user;
   }
   return (
     <div className="flex w-full flex-col ">
@@ -92,7 +94,7 @@ const QuestionDetails = async ({ params, searchParams }) => {
       <AllAnswers
         questionId={QuestionDetails._id}
         questionCount={QuestionDetails.answers.length}
-        userId={mongoUser._id}
+        userId={JSON.stringify(mongoUser._id)}
       />
       <AnswerForm
         question={QuestionDetails.description}

@@ -37,7 +37,8 @@ const QuestionCard = ({
   author,
   createdAt,
 }: QuestionCardProps) => {
-  const showActionButtons = clerkId && clerkId === author.clerkId;
+  const parsedClerkId = clerkId ? JSON.parse(clerkId) : "";
+  const showActionButtons = parsedClerkId && parsedClerkId === author.clerkId;
   return (
     <div className="card-wrapper mt-9 rounded-md px-6 py-4">
       <div className="flex w-full flex-col items-start ">
@@ -60,58 +61,9 @@ const QuestionCard = ({
       <div className="flex flex-wrap gap-5">
         {tags?.length > 0 &&
           tags.map((tag) => (
-            <RenderTags key={tag._id} title={tag.name} _id={tag._id} />
+            <RenderTags key={tag._id} title={tag.name} _id={JSON.stringify(tag._id)} />
           ))}
-      </div>
-      {/* <div className="mt-3  flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 ">
-          <Image
-            src={`/assets/images/bishwash.jpg`}
-            alt={`${author.name}`}
-            width={20}
-            height={10}
-            className="rounded-full "
-          />
-          <p className="paragraph-semibold text-dark500_light700">
-            {author.name}
-          </p>
-          <div className="subtle-regular text-light400_light500 line-clamp-1 max-sm:hidden">
-            &#x25cf; {String(createdAt)}
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1">
-            <Image
-              src={`/assets/icons/like.svg`}
-              alt="Like"
-              width={18}
-              height={18}
-              className="invert-colors"
-            />
-            <p className="small-regular text-dark500_light700">{`${votes} Votes`}</p>
-          </div>
-          <div className="flex items-center gap-1">
-            <Image
-              src={`/assets/icons/like.svg`}
-              alt="Like"
-              width={18}
-              height={18}
-              className="invert-colors"
-            />
-            <p className="small-regular text-dark500_light700">{`${votes} Votes`}</p>
-          </div>
-          <div className="flex items-center gap-1">
-            <Image
-              src={`/assets/icons/like.svg`}
-              alt="Like"
-              width={18}
-              height={18}
-              className="invert-colors"
-            />
-            <p className="small-regular text-dark500_light700">{`${votes} Votes`}</p>
-          </div>
-        </div>
-      </div> */}
+      </div>     
       <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-2">
         <Metric
           imgUrl={author.picture}

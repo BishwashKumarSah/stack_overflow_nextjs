@@ -57,7 +57,7 @@ const AllAnswers = async (params: Props) => {
                   <Voting
                     type="Answer"
                     itemId={JSON.stringify(answer._id)}
-                    userId={JSON.stringify(userId)}
+                    userId={userId}
                     upvotes={answer.upvotes.length}
                     hasUpvoted={answer.upvotes.includes(userId)}
                     hasDownvoted={answer.downvotes.includes(userId)}

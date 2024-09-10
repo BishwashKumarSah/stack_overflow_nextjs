@@ -6,6 +6,7 @@ import Tag from "@/database/tag.model";
 import {
   CreateQuestionParams,
   DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   GetUserStatsParams,
@@ -194,6 +195,29 @@ export async function deleteQuestionsById(params: DeleteQuestionParams) {
     await connectToDatabase();
     await Question.findOneAndDelete({ _id: questionId });
     //! Check the Question Schema for further deletion like tags,answers,interaction
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function updateQuestiion(params: EditQuestionParams) {
+  // eslint-disable-next-line no-empty
+  try {
+    connectToDatabase();
+    const { questionId, title, description, path } = params;
+
+    const question = await Question.findByIdAndUpdate(
+      questionId,
+      { title, description },
+      { new: true }
+    );
+
+    // If the question does not exist, return an error or throw an exception
+    if (!question) {
+      throw new Error("Question not found with the given ID");
+    }
     revalidatePath(path);
   } catch (error) {
     console.log(error);
