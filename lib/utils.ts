@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import qs from "query-string";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,11 +65,56 @@ export function formatNumber(value: number): string {
   }
 }
 
-export const getYearMonth = (date:Date) => { 
-
+export const getYearMonth = (date: Date) => {
   // Get the month and year
   const month = date.toLocaleString("default", { month: "long" }); // "long" for full month name (e.g., "September")
   const year = date.getFullYear(); // Get the year
 
   return `${month} ${year}`;
+};
+
+interface formQueryUrlProps {
+  params: string;
+  key: string;
+  value: string | null;
+}
+
+export const formQueryUrl = ({ params, key, value }: formQueryUrlProps) => {
+  const currentUrl = qs.parse(params);
+
+  currentUrl[key] = value;
+
+  const newUrl = qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  );
+
+  return newUrl;
+};
+
+interface removeKeysFromUrlParams {
+  params: string;
+  keys: string[];
+}
+
+export const removeKeysFromUrl = ({
+  params,
+  keys,
+}: removeKeysFromUrlParams) => {
+  const currentUrl = qs.parse(params);
+
+  keys.forEach((key) => delete currentUrl[key]);
+
+  const newUrl = qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  );
+
+  return newUrl;
 };

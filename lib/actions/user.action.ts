@@ -1,6 +1,6 @@
 "use server";
 
-import User from "@/database/user.model";
+import User, { IUser } from "@/database/user.model";
 import { connectToDatabase } from "../connectToDb";
 import {
   CreateUserParams,
@@ -23,8 +23,16 @@ import { redirect } from "next/navigation";
 export const getAllUsers = async (params: GetAllUsersParams) => {
   try {
     connectToDatabase();
-    // const { page, pageSize, filter, searchQuery } = params;
-    const allUsers = await User.find({}).sort({ createdAt: -1 });
+    const { page, pageSize, filter, searchQuery } = params;
+    const query: FilterQuery<IUser> = {};
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: new RegExp(searchQuery, "i") } },
+        { username: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+    console.log("query", query);
+    const allUsers = await User.find(query).sort({ createdAt: -1 });
     return { allUsers };
   } catch (error) {
     console.log(error);
@@ -152,14 +160,18 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
 
     const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
 
-    const filterQuery: FilterQuery<IQuestion> = searchQuery
-      ? { title: { $regex: new RegExp(searchQuery, "i") } }
-      : {};
+    const query: FilterQuery<IQuestion> = {};
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { description: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
 
     const user = await User.findOne({ clerkId }).populate({
       path: "saved",
       model: "Question",
-      match: filterQuery,
+      match: query,
       options: {
         sort: { createdAt: -1 },
       },

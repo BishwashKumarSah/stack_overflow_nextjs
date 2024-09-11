@@ -11,8 +11,10 @@ import { URLProps } from "@/types";
 import { GetQuestionsByTagId } from "@/lib/actions/tag.action";
 
 const TagsQuestions = async ({ params, searchParams }: URLProps) => {
+  const searchQuery = searchParams.q
   const { tagTitle, questions } = await GetQuestionsByTagId({
     tagId: params.id,
+    searchQuery
   });
 
   return (
@@ -21,7 +23,7 @@ const TagsQuestions = async ({ params, searchParams }: URLProps) => {
 
       <div className="mt-11 w-full ">
         <LocalSearchbar
-          route="/"
+          route={`/tags/${params.id}`}
           placeholder="Search for tags..."
           imgSrc="/assets/icons/search.svg"
           otherClasses="flex-1"

@@ -7,24 +7,27 @@ import { getSavedQuestions } from "@/lib/actions/user.action";
 import React from "react";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { URLProps } from "@/types";
 
-
-const Collection = async () => {
+const Collection = async ({ params, searchParams }: URLProps) => {
   const { userId }: { userId: string | null } = auth();
 
   if (userId === null) {
     redirect("/sign-in");
   }
 
-  const { questions } = await getSavedQuestions({ clerkId: userId });
+  const searchQuery = searchParams.q;
+  const { questions } = await getSavedQuestions({
+    clerkId: userId,
+    searchQuery,
+  });
 
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">Saved Questions</h1>
-
       <div className="mt-11 flex w-full justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchbar
-          route="/"
+          route="/collection"
           placeholder="Search saved questions..."
           imgSrc="/assets/icons/search.svg"
           otherClasses="flex-1"

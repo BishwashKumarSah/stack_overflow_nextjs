@@ -3,13 +3,14 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { TagFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
+import { URLProps } from "@/types";
 import Link from "next/link";
-
 import React from "react";
 
-const Community = async () => {
+const Community = async ({params,searchParams}:URLProps) => {
   //   const { allUsers } = await getAllUsers({});
-  const { allTags } = await getAllTags({});
+  const searchQuery = searchParams.q
+  const { allTags } = await getAllTags({searchQuery});
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>

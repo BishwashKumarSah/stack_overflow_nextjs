@@ -7,14 +7,15 @@ import {
   GetQuestionsByTagIdParams,
   GetTopInteractedTagsParams,
 } from "./shared.types";
-import Tag from "@/database/tag.model";
-import Question from "@/database/question.model";
+import Tag, { ITag } from "@/database/tag.model";
+import Question, { IQuestion } from "@/database/question.model";
+import { FilterQuery } from "mongoose";
 
 export const getTopInteractedTags = async (
   params: GetTopInteractedTagsParams
 ) => {
-  connectToDatabase();
   try {
+    connectToDatabase();
     // const { userId, limit = 3 } = params;
     const { userId } = params;
 
@@ -34,12 +35,14 @@ export const getTopInteractedTags = async (
 };
 
 export const getAllTags = async (params: GetAllTagsParams) => {
-  connectToDatabase();
   try {
-    // const { userId, limit = 3 } = params;
+    connectToDatabase();
     const { page, pageSize, filter, searchQuery } = params;
-
-    const allTags = await Tag.find({});
+    const query: FilterQuery<ITag> = {};
+    if (searchQuery) {
+      query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
+    }
+    const allTags = await Tag.find(query);
     return { allTags };
   } catch (error) {
     console.log(error);
@@ -52,15 +55,20 @@ export const GetQuestionsByTagId = async (
 ) => {
   connectToDatabase();
   try {
-    // const { userId, limit = 3 } = params;
     const { tagId, page = 1, pageSize = 10, searchQuery } = params;
+
+    const query: FilterQuery<IQuestion> = {};
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { description: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
 
     const tagQuestions = await Tag.findById(tagId).populate({
       path: "questions",
       model: Question,
-      match: searchQuery
-        ? { title: { $regex: searchQuery, $options: "i" } }
-        : {},
+      match: query,
       options: {
         sort: { createdAt: -1 },
       },
@@ -73,6 +81,26 @@ export const GetQuestionsByTagId = async (
       throw new Error("Tags Not Found!");
     }
     return { tagTitle: tagQuestions.name, questions: tagQuestions.questions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getPopularTags = async () => {
+  try {
+    await connectToDatabase();
+    const Tags = await Tag.aggregate([
+      {
+        $addFields: {
+          savedcount: { $size: "$followers" },
+          questionscount: { $size: "$questions" },
+        },
+      },
+      { $sort: { questionscount: -1 } },
+      { $limit: 5 },
+    ]);
+    return { Tags };
   } catch (error) {
     console.log(error);
     throw error;

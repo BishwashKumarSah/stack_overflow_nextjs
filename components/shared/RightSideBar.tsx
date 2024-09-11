@@ -2,27 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RenderTags from "./RenderTags";
+import { getTopQuestions } from "@/lib/actions/question.action";
+import { getPopularTags } from "@/lib/actions/tag.action";
 
-const TopQuestions = [
-  {
-    _id: "1",
-    title:
-      "Best practices for data fetching in a Next.js application with Server-Side Rendering (SSR)?",
-  },
-  { _id: "2", title: "Is it only me or the font is bolder than necessary?" },
-  { _id: "3", title: "Redux Toolkit Not Updating State as Expected" },
-  { _id: "4", title: "Async/Await Function Not Handling Errors Properly" },
-  { _id: "5", title: "Can I get the course for free?" },
-];
-
-const Tags = [
-  { _id: "1", title: "React", totalNumberOfQuestions: 2 },
-  { _id: "2", title: "Angular", totalNumberOfQuestions: 29 },
-  { _id: "3", title: "Vue", totalNumberOfQuestions: 22 },
-  { _id: "4", title: "Node", totalNumberOfQuestions: 12 },
-];
-
-const RightSideBar = () => {
+const RightSideBar = async () => {
+  const { TopQuestions } = await getTopQuestions();
+  const { Tags } = await getPopularTags();
   return (
     <section className="background-light900_dark200 light-border sticky right-0 top-0 flex h-screen w-[350px] flex-col overflow-y-auto border-l px-6 pt-32 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>
@@ -59,9 +44,9 @@ const RightSideBar = () => {
               return (
                 <RenderTags
                   key={tag._id}
-                  title={tag.title}
-                  _id={tag._id}
-                  questionsCount={tag.totalNumberOfQuestions}
+                  title={tag.name}
+                  _id={JSON.stringify(tag._id)}
+                  questionsCount={tag.questionscount}
                   showCount
                 />
               );

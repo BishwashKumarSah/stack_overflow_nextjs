@@ -1,6 +1,5 @@
 "use server";
 
-import Question from "@/database/question.model";
 import { connectToDatabase } from "../connectToDb";
 import Tag from "@/database/tag.model";
 import {
@@ -14,14 +13,65 @@ import {
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import { FilterQuery, PipelineStage } from "mongoose";
+import Question, { IQuestion } from "@/database/question.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const questions = await Question.find({})
-      .populate({ path: "tags", model: Tag })
-      .populate({ path: "author", model: User })
-      .sort({ createdAt: -1 });
+    const { searchQuery, filter } = params;
+    const query: FilterQuery<IQuestion> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { description: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    let aggregatePipeline: PipelineStage[] = [
+      { $match: query },
+      {
+        $lookup: {
+          from: "tags",
+          localField: "tags",
+          foreignField: "_id",
+          as: "tags",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+    ];
+
+    switch (filter) {
+      case "newest":
+        aggregatePipeline.push({ $sort: { createdAt: -1 } });
+        break;
+      case "frequent":
+        aggregatePipeline.push({ $sort: { views: -1 } });
+        break;
+      case "unanswered":
+        aggregatePipeline.push(
+          {
+            $addFields: { answercount: { $size: "$answers" } },
+          },
+          { $match: { answercount: 0 } },
+          { $sort: { createdAt: -1 } }
+        );
+        break;
+
+      default:
+        break;
+    }
+
+    const questions = await Question.aggregate(aggregatePipeline).exec();
+
     return { questions };
   } catch (error) {
     console.log(error);
@@ -192,6 +242,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 export async function deleteQuestionsById(params: DeleteQuestionParams) {
   try {
     const { questionId, path } = params;
+
     await connectToDatabase();
     await Question.findOneAndDelete({ _id: questionId });
     //! Check the Question Schema for further deletion like tags,answers,interaction
@@ -219,6 +270,32 @@ export async function updateQuestiion(params: EditQuestionParams) {
       throw new Error("Question not found with the given ID");
     }
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getTopQuestions() {
+  // eslint-disable-next-line no-empty
+  try {
+    connectToDatabase();
+    const TopQuestions = await Question.aggregate([
+      {
+        $addFields: {
+          upvotescount: { $size: "$upvotes" },
+        },
+      },
+      {
+        $sort: {
+          views: -1,
+          upvotescount: -1,
+        },
+      },
+      { $limit: 5 },
+    ]);
+
+    return { TopQuestions };
   } catch (error) {
     console.log(error);
     throw error;

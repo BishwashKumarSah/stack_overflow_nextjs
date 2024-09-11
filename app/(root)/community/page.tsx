@@ -4,11 +4,14 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
+import { URLProps } from "@/types";
 import Link from "next/link";
 import React from "react";
 
-const Community = async () => {
-  const { allUsers } = await getAllUsers({});
+const Community = async ({ params, searchParams }: URLProps) => {
+
+  const searchQuery = searchParams.q
+  const { allUsers } = await getAllUsers({searchQuery});
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Users</h1>

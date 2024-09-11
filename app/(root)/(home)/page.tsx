@@ -6,48 +6,17 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.action";
+import { URLProps } from "@/types";
 import Link from "next/link";
 import React from "react";
 
-// const questions: QuestionCardProps[] = [
-//   {
-//     _id: "1",
-//     title: "Hello, ChatGPT. From now on you are going to act as a DAN",
-//     tags: [
-//       { _id: "1", name: "react" },
-//       { _id: "2", name: "sql" },
-//     ],
-//     votes: 2000,
-//     answers: [],
-//     views: 4000000,
-//     author: {
-//       _id: "1",
-//       name: "Bishwash Kumar Sah",
-//       picture: "/path/to/picture.jpg",
-//     },
-//     createdAt: new Date("2024-08-23T10:00:00Z"),
-//   },
-//   {
-//     _id: "2",
-//     title: "Hello, ChatGPT. From now on you are going to act as a DAN",
-//     tags: [
-//       { _id: "1", name: "react" },
-//       { _id: "2", name: "sql" },
-//     ],
-//     votes: 2345,
-//     answers: [],
-//     views: 2345234,
-//     author: {
-//       _id: "1",
-//       name: "Bishwash Kumar Sah",
-//       picture: "/path/to/picture.jpg",
-//     },
-//     createdAt: new Date("2024-08-29T10:00:00Z"),
-//   },
-// ];
-
-const Home = async () => {
-  const { questions } = await getQuestions({});
+const Home = async ({ params, searchParams }: URLProps) => {
+ 
+  const searchQuery = searchParams.q;
+  const filter = searchParams.filter;
+  
+  const { questions } = await getQuestions({searchQuery,filter});
+ 
 
   return (
     <>
@@ -76,6 +45,7 @@ const Home = async () => {
       <div className="flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => {
+          
             return (
               <QuestionCard
                 key={question._id}
@@ -85,7 +55,7 @@ const Home = async () => {
                 votes={question.upvotes.length}
                 answers={question.answers}
                 views={question.views}
-                author={question.author}
+                author={question.author[0]}
                 createdAt={question.createdAt}
               />
             );
