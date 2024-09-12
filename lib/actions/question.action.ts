@@ -29,7 +29,7 @@ export async function getQuestions(params: GetQuestionsParams) {
       ];
     }
 
-    let aggregatePipeline: PipelineStage[] = [
+    const aggregatePipeline: PipelineStage[] = [
       { $match: query },
       {
         $lookup: {
@@ -162,7 +162,7 @@ export async function upVoteQuestion(params: QuestionVoteParams) {
     if (!question) {
       throw new Error("Question Not Found!");
     }
-
+    console.log("Question",question);
     // TODO: Increase the reputation
 
     revalidatePath(path);

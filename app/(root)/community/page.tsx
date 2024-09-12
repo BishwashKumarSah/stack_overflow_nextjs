@@ -9,9 +9,9 @@ import Link from "next/link";
 import React from "react";
 
 const Community = async ({ params, searchParams }: URLProps) => {
-
-  const searchQuery = searchParams.q
-  const { allUsers } = await getAllUsers({searchQuery});
+  const searchQuery = searchParams.q;
+  const filter = searchParams.filter;
+  const { allUsers } = await getAllUsers({ searchQuery, filter });
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Users</h1>

@@ -17,7 +17,7 @@ const HomeFilters = () => {
         params: params.toString(),
         keys: ["filter"],
       });
-      router.push(newUrl);
+      router.push(newUrl,{ scroll: false });
     } else {
       setActive(item);
       const newUrl = formQueryUrl({
@@ -25,7 +25,8 @@ const HomeFilters = () => {
         key: "filter",
         value: item.toLowerCase(),
       });
-      router.push(newUrl);
+      
+      router.push(newUrl,{ scroll: false });
     }
   };
 

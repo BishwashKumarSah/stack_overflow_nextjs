@@ -10,12 +10,12 @@ export interface IQuestion extends Document {
   downvotes: Schema.Types.ObjectId[];
   views: number;
   answers: Schema.Types.ObjectId[];
-  author: Schema.Types.ObjectId[];
+  author: Schema.Types.ObjectId;
   tags: Schema.Types.ObjectId[];
   createdAt: Date;
 }
 
-const QuestionSchema = new Schema(
+const QuestionSchema = new Schema<IQuestion>(
   {
     title: {
       type: String,

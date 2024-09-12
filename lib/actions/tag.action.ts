@@ -9,7 +9,7 @@ import {
 } from "./shared.types";
 import Tag, { ITag } from "@/database/tag.model";
 import Question, { IQuestion } from "@/database/question.model";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, PipelineStage } from "mongoose";
 
 export const getTopInteractedTags = async (
   params: GetTopInteractedTagsParams
@@ -38,14 +38,60 @@ export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     connectToDatabase();
     const { page, pageSize, filter, searchQuery } = params;
+
     const query: FilterQuery<ITag> = {};
     if (searchQuery) {
       query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
     }
-    const allTags = await Tag.find(query);
+
+    const aggregatePipeline: PipelineStage[] = [{ $match: query }];
+
+    switch (filter) {
+      
+      case "popular":
+        aggregatePipeline.push(
+          { $addFields: { questioncount: { $size: "$questions" } } },
+          { $sort: { questioncount: -1 } }
+        );
+        break;
+
+      case "recent":
+        aggregatePipeline.push({
+          $sort: {
+            createdOn: -1,
+          },
+        });
+        break;
+
+      case "name":
+        aggregatePipeline.push(
+          {
+            $addFields: { nameupper: { $toUpper: "$name" } },
+          },
+          { $sort: { nameupper: 1 } },
+          { $project: { nameupper: 0 } }
+        );
+        break;
+
+      case "old":
+        aggregatePipeline.push({
+          $sort: {
+            createdOn: 1,
+          },
+        });
+        break;
+      default:
+        break;
+    }
+
+    const allTags = await Tag.aggregate(aggregatePipeline).exec();
+
     return { allTags };
+
   } catch (error) {
+
     console.log(error);
+
     throw error;
   }
 };

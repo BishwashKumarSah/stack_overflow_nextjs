@@ -7,23 +7,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTimesAgo } from "@/lib/utils";
 import Voting from "./Voting";
+import { ObjectId } from "mongodb";
 
 interface Props {
   questionId: string;
   questionCount: number;
   userId: string;
+  filter?: string;
 }
 const AllAnswers = async (params: Props) => {
-  const { questionCount, questionId, userId } = params;
-  const { allAnswers } = await getAllAnswer({ questionId });
+  const { questionCount, questionId, userId, filter } = params;
+
+  const { allAnswers } = await getAllAnswer({ questionId, filter });
+
   return (
     <div className="flex flex-col">
       <div className="mt-11 flex items-center justify-between">
         <h3 className="primary-text-gradient">{questionCount} Answers</h3>
-        <Filter
-          filters={AnswerFilters}
-          otherClasses=" w-[170px] max-md:flex "
-        />
+        <Filter filters={AnswerFilters} otherClasses="w-[170px] max-md:flex" />
       </div>
       <div>
         {allAnswers.length > 0 &&
@@ -42,7 +43,7 @@ const AllAnswers = async (params: Props) => {
                       width={18}
                       height={18}
                     />
-                    <div className="flex  items-center gap-1">
+                    <div className="flex items-center gap-1">
                       <p className="body-semibold text-dark300_light700">
                         {answer.author.name}
                       </p>
@@ -57,10 +58,18 @@ const AllAnswers = async (params: Props) => {
                   <Voting
                     type="Answer"
                     itemId={JSON.stringify(answer._id)}
-                    userId={userId}
+                    userId={JSON.stringify(userId)}
                     upvotes={answer.upvotes.length}
-                    hasUpvoted={answer.upvotes.includes(userId)}
-                    hasDownvoted={answer.downvotes.includes(userId)}
+                    hasUpVoted={answer.upvotes.some((id: ObjectId) => {
+                      const upvoteId = id.toString(); // Convert ObjectId to string
+                      const cleanUserId = userId.toString(); // Ensure userId is also a string
+                      return upvoteId === cleanUserId; // Compare as strings
+                    })}
+                    hasDownVoted={answer.downvotes.some((id: ObjectId) => {
+                      const downvoteId = id.toString(); // Convert ObjectId to string
+                      const cleanUserId = userId.toString(); // Ensure userId is also a string
+                      return downvoteId === cleanUserId; // Compare as strings
+                    })}
                     downvotes={answer.downvotes.length}
                   />
                 </div>

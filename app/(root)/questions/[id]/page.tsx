@@ -49,8 +49,8 @@ const QuestionDetails = async ({ params, searchParams }: URLProps) => {
             itemId={JSON.stringify(QuestionDetails._id)}
             userId={JSON.stringify(mongoUser._id)}
             upvotes={QuestionDetails.upvotes.length}
-            hasUpvoted={QuestionDetails.upvotes.includes(mongoUser._id)}
-            hasDownvoted={QuestionDetails.downvotes.includes(mongoUser._id)}
+            hasUpVoted={QuestionDetails.upvotes.includes(mongoUser._id)}
+            hasDownVoted={QuestionDetails.downvotes.includes(mongoUser._id)}
             downvotes={QuestionDetails.downvotes.length}
             hasSaved={mongoUser.saved.includes(QuestionDetails._id)}
           />
@@ -94,7 +94,8 @@ const QuestionDetails = async ({ params, searchParams }: URLProps) => {
       <AllAnswers
         questionId={QuestionDetails._id}
         questionCount={QuestionDetails.answers.length}
-        userId={JSON.stringify(mongoUser._id)}
+        userId={mongoUser._id}
+        filter={searchParams.filter}
       />
       <AnswerForm
         question={QuestionDetails.description}

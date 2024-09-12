@@ -17,9 +17,11 @@ const Collection = async ({ params, searchParams }: URLProps) => {
   }
 
   const searchQuery = searchParams.q;
+  const filter = searchParams.filter;
   const { questions } = await getSavedQuestions({
     clerkId: userId,
     searchQuery,
+    filter,
   });
 
   return (
