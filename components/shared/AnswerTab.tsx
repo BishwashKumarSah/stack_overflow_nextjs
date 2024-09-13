@@ -1,6 +1,7 @@
 import { getUserAnswers } from "@/lib/actions/answer.action";
 import React from "react";
 import AnswerCard from "../cards/AnswerCard";
+import Pagination from "./Pagination";
 
 interface AnswerTabProps {
   clerkId?: string | null;
@@ -11,8 +12,10 @@ interface AnswerTabProps {
 
 const AnswerTab = async (props: AnswerTabProps) => {
   const { userId, page, pageSize, clerkId } = props;
-  const { totalAnswers, answers } = await getUserAnswers({
+  const { totalAnswers, answers, totalButtons } = await getUserAnswers({
     userId: JSON.parse(userId),
+    page,
+    pageSize,
   });
 
   return (
@@ -36,6 +39,11 @@ const AnswerTab = async (props: AnswerTabProps) => {
         <h3 className="h3-bold text-dark200_light800">
           The User has not posted any answers yet!
         </h3>
+      )}
+      {totalButtons > 1 && (
+        <div className="flex-center mt-11 w-full ">
+          <Pagination totalButtons={totalButtons} currentPage={page!} />
+        </div>
       )}
     </>
   );

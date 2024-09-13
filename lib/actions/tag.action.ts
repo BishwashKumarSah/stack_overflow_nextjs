@@ -37,17 +37,26 @@ export const getTopInteractedTags = async (
 export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     connectToDatabase();
-    const { page, pageSize, filter, searchQuery } = params;
+    const { page = 1, pageSize = 20, filter, searchQuery } = params;
+    const limit = pageSize || 20;
+    const skip = (page - 1) * limit;
 
     const query: FilterQuery<ITag> = {};
     if (searchQuery) {
       query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
     }
 
-    const aggregatePipeline: PipelineStage[] = [{ $match: query }];
+    const aggregatePipeline: PipelineStage[] = [
+      { $match: query },
+      {
+        $facet: {
+          totalDocuments: [{ $count: "total" }],
+          paginatedResults: [{ $skip: skip }, { $limit: limit }],
+        },
+      },
+    ];
 
     switch (filter) {
-      
       case "popular":
         aggregatePipeline.push(
           { $addFields: { questioncount: { $size: "$questions" } } },
@@ -86,10 +95,19 @@ export const getAllTags = async (params: GetAllTagsParams) => {
 
     const allTags = await Tag.aggregate(aggregatePipeline).exec();
 
-    return { allTags };
+    const TagResults = allTags[0].paginatedResults?.map(
+      (result: Partial<ITag>) => result
+    );
 
+    const totalDocuments =
+      allTags[0].totalDocuments.length > 0
+        ? allTags[0].totalDocuments[0].total
+        : 0;
+
+    const totalButtons = Math.ceil(totalDocuments / limit);
+
+    return { allTags: TagResults, totalButtons };
   } catch (error) {
-
     console.log(error);
 
     throw error;

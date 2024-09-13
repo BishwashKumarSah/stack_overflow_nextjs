@@ -16,14 +16,13 @@ import { revalidatePath } from "next/cache";
 import { FilterQuery, PipelineStage } from "mongoose";
 import Question, { IQuestion } from "@/database/question.model";
 
-import Tag from "@/database/tag.model";
 import Answer from "@/database/answer.model";
 import { redirect } from "next/navigation";
 
 export const getAllUsers = async (params: GetAllUsersParams) => {
   try {
     connectToDatabase();
-    const { page, pageSize, filter, searchQuery } = params;
+    const { page = 1, pageSize, filter, searchQuery } = params;
     const query: FilterQuery<IUser> = {};
 
     if (searchQuery) {
@@ -48,8 +47,17 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
         break;
     }
 
-    const allUsers = await User.find(query).sort(sortOptions);
-    return { allUsers };
+    const limit = pageSize || 10;
+    const skip = (page - 1) * limit;
+
+    const totalDocuments = await User.countDocuments(query);
+    const totalButtons = Math.ceil(totalDocuments / limit);
+
+    const allUsers = await User.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit);
+    return { allUsers, totalButtons };
   } catch (error) {
     console.log(error);
     throw error;
@@ -174,12 +182,12 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
   try {
     connectToDatabase();
 
-    const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+    const { clerkId, page = 1, pageSize = 20, filter, searchQuery } = params;
 
     // ? I have also changed the query since the title and description are in saved
     // ? because we are searching based on userId and after we got that user we have saved field
-    // ? which contains the questionId and after doning lookup i will get title and description so i u
-    // ? sed saved.title and saved.description
+    // ? which contains the questionId and after doning lookup i will get title and description so i
+    // ? used saved.title and saved.description
 
     const query: FilterQuery<IQuestion> = {};
     if (searchQuery) {
@@ -188,6 +196,9 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
         { "saved.description": { $regex: new RegExp(searchQuery, "i") } },
       ];
     }
+
+    const limit = pageSize || 20;
+    const skip = (page - 1) * limit;
 
     const aggregatePipeline: PipelineStage[] = [
       {
@@ -229,8 +240,8 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
         $group: {
           _id: {
             // userId and savedQuestionId are custom names (aliases) for the respective fields.
-            userId: "$_id",          // Group by the user's _id
-            savedQuestionId: "$saved._id"  // Group by the saved question's _id
+            userId: "$_id", // Group by the user's _id
+            savedQuestionId: "$saved._id", // Group by the saved question's _id
           },
           saved: { $first: "$saved" }, // Keep only one instance of saved question
           clerkId: { $first: "$clerkId" },
@@ -244,6 +255,15 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
           joinedAt: { $first: "$joinedAt" },
           createdAt: { $first: "$createdAt" },
           updatedAt: { $first: "$updatedAt" },
+        },
+      },
+      {
+        $facet: {
+          totalDocuments: [{ $count: "total" }], // Count total documents
+          paginatedResults: [
+            { $skip: skip }, // Apply skip
+            { $limit: limit }, // Apply limit
+          ],
         },
       },
     ];
@@ -306,11 +326,22 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       throw new Error("No User Found!");
     }
 
-    console.log("USSSSSER", userResults);
+    
 
-    const savedQuestions = userResults.map((user) => user.saved);
+    const savedQuestions = userResults[0].paginatedResults.map(
+      (user:Partial<IUser>) => user.saved
+    );
+    const totalDocuments =
+      userResults[0].totalDocuments.length > 0
+        ? userResults[0].totalDocuments[0].total
+        : 0;
 
-    return { questions: savedQuestions };
+    const totalButtons = Math.ceil(totalDocuments / limit);
+
+    return {
+      questions: savedQuestions,
+      totalButtons,
+    };
   } catch (error) {
     console.log(error);
     throw error;

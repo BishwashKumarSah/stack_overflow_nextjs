@@ -2,6 +2,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
@@ -11,12 +12,17 @@ import Link from "next/link";
 import React from "react";
 
 const Home = async ({ params, searchParams }: URLProps) => {
- 
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
-  
-  const { questions } = await getQuestions({searchQuery,filter});
- 
+  const page = searchParams?.page ? +searchParams.page : 1;
+  const pageSize = 20;
+
+  const { questions, totalButtons } = await getQuestions({
+    searchQuery,
+    filter,
+    page,
+    pageSize,
+  });
 
   return (
     <>
@@ -45,7 +51,6 @@ const Home = async ({ params, searchParams }: URLProps) => {
       <div className="flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => {
-          
             return (
               <QuestionCard
                 key={question._id}
@@ -71,6 +76,14 @@ const Home = async ({ params, searchParams }: URLProps) => {
           />
         )}
       </div>
+      {totalButtons > 1 && (
+        <div className="flex-center mt-11 w-full ">
+          <Pagination
+            totalButtons={totalButtons}
+            currentPage={searchParams?.page ? +searchParams.page : 1}
+          />
+        </div>
+      )}
     </>
   );
 };

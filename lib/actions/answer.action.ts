@@ -126,7 +126,7 @@ export async function upVoteAnswer(params: AnswerVoteParams) {
       new: true,
     });
 
-    console.log("ANswer",answer);
+    console.log("ANswer", answer);
 
     if (!answer) {
       throw new Error("Answer Not Found!");
@@ -185,7 +185,13 @@ export async function getUserAnswers(params: GetUserStatsParams) {
       })
       .populate({ path: "question", model: Question, select: "_id title" });
     answers.sort((a, b) => b.upvotes.length - a.upvotes.length);
-    return { totalAnswers, answers };
+
+    const limit = pageSize || 10;
+    const skip = (page - 1) * limit;
+    const totalButtons = Math.ceil(totalAnswers / limit);
+
+    const paginatedAnswers = answers.slice(skip, skip + limit);
+    return { totalAnswers, answers: paginatedAnswers, totalButtons };
   } catch (error) {
     console.log(error);
     throw error;

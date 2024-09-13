@@ -19,7 +19,7 @@ import Question, { IQuestion } from "@/database/question.model";
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
     const query: FilterQuery<IQuestion> = {};
 
     if (searchQuery) {
@@ -29,7 +29,8 @@ export async function getQuestions(params: GetQuestionsParams) {
       ];
     }
 
-    const aggregatePipeline: PipelineStage[] = [
+    // Main aggregation pipeline stages
+    const mainPipeline: PipelineStage[] = [
       { $match: query },
       {
         $lookup: {
@@ -49,15 +50,16 @@ export async function getQuestions(params: GetQuestionsParams) {
       },
     ];
 
+    // Apply sorting based on the filter
     switch (filter) {
       case "newest":
-        aggregatePipeline.push({ $sort: { createdAt: -1 } });
+        mainPipeline.push({ $sort: { createdAt: -1 } });
         break;
       case "frequent":
-        aggregatePipeline.push({ $sort: { views: -1 } });
+        mainPipeline.push({ $sort: { views: -1 } });
         break;
       case "unanswered":
-        aggregatePipeline.push(
+        mainPipeline.push(
           {
             $addFields: { answercount: { $size: "$answers" } },
           },
@@ -65,14 +67,33 @@ export async function getQuestions(params: GetQuestionsParams) {
           { $sort: { createdAt: -1 } }
         );
         break;
-
       default:
         break;
     }
 
-    const questions = await Question.aggregate(aggregatePipeline).exec();
+    // Define the $facet stage separately
+    const facetStage: PipelineStage[] = [
+      {
+        $facet: {
+          metadata: [{ $count: "totalDocuments" }],
+          questions: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+        },
+      },
+    ];
 
-    return { questions };
+    // Combine the main pipeline with the facet stage
+    const aggregatePipeline: PipelineStage[] = [...mainPipeline, ...facetStage];
+
+    const result = await Question.aggregate(aggregatePipeline).exec();
+
+    // console.log("RESULT", result[0].metadata,result[0].questions);
+
+    const totalDocuments = result[0]?.metadata?.[0]?.totalDocuments || 0;
+
+    const totalButtons = Math.ceil(totalDocuments / pageSize);
+    const questions = result[0]?.questions || [];
+
+    return { questions, totalButtons };
   } catch (error) {
     console.log(error);
     throw error;
@@ -162,7 +183,7 @@ export async function upVoteQuestion(params: QuestionVoteParams) {
     if (!question) {
       throw new Error("Question Not Found!");
     }
-    console.log("Question",question);
+    console.log("Question", question);
     // TODO: Increase the reputation
 
     revalidatePath(path);
@@ -232,7 +253,15 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       // If views are equal, compare by the number of upvotes
       return b.upvotes.length - a.upvotes.length;
     });
-    return { totalQuestions, Questions: questions };
+
+    const limit = pageSize || 10;
+    const skip = (page - 1) * limit;
+
+    const totalButtons = Math.ceil(totalQuestions / limit);
+
+    const paginatedQuestions = questions.slice(skip, skip + limit);
+
+    return { totalQuestions, Questions: paginatedQuestions, totalButtons };
   } catch (error) {
     console.log(error);
     throw error;

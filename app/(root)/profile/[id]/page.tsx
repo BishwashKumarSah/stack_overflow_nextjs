@@ -13,10 +13,13 @@ import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswerTab from "@/components/shared/AnswerTab";
 
+
 const ProfileDetails = async ({ params, searchParams }: URLProps) => {
   const { user, totalAnswersCount, totalQuestionsCount } =
-    await getUserDetailsById({ userId: params.id });
+    await getUserDetailsById({ userId: params.id });  
 
+  const page = searchParams?.page ? +searchParams.page : 1;
+  const pageSize = 10;
   const { userId: clerkId } = auth();
 
   return (
@@ -89,16 +92,16 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
             <QuestionTab
               clerkId={JSON.stringify(clerkId)}
               userId={JSON.stringify(user._id)}
-              page={1}
-              pageSize={10}
+              page={page}
+              pageSize={pageSize}
             />
           </TabsContent>
           <TabsContent value="answers">
             <AnswerTab
               clerkId={JSON.stringify(clerkId)}
               userId={JSON.stringify(user._id)}
-              page={1}
-              pageSize={10}
+              page={page}
+              pageSize={pageSize}
             />
           </TabsContent>
         </Tabs>

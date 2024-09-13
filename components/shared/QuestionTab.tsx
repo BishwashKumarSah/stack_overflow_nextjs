@@ -1,6 +1,7 @@
 import { getUserQuestions } from "@/lib/actions/question.action";
 import React from "react";
 import QuestionCard from "../cards/QuestionCard";
+import Pagination from "./Pagination";
 
 interface QuestionTabProps {
   clerkId?: string | null;
@@ -11,8 +12,15 @@ interface QuestionTabProps {
 
 const QuestionTab = async (props: QuestionTabProps) => {
   const { userId, page, pageSize, clerkId } = props;
-  const { totalQuestions, Questions: questions } = await getUserQuestions({
+
+  const {
+    totalQuestions,
+    Questions: questions,
+    totalButtons,
+  } = await getUserQuestions({
     userId: JSON.parse(userId),
+    page,
+    pageSize,
   });
   return (
     <>
@@ -37,6 +45,14 @@ const QuestionTab = async (props: QuestionTabProps) => {
         <h3 className="h3-bold text-dark200_light800">
           The User has not posted any questions yet!
         </h3>
+      )}
+      {totalButtons > 1 && (
+        <div className="flex-center mt-11 w-full ">
+          <Pagination
+            totalButtons={totalButtons}
+            currentPage={page!}
+          />
+        </div>
       )}
     </>
   );

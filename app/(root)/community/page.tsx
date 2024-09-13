@@ -1,5 +1,6 @@
 import UserCard from "@/components/cards/UserCard";
 import Filter from "@/components/shared/Filter";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { UserFilters } from "@/constants/filters";
@@ -11,7 +12,14 @@ import React from "react";
 const Community = async ({ params, searchParams }: URLProps) => {
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
-  const { allUsers } = await getAllUsers({ searchQuery, filter });
+  const page = searchParams?.page ? +searchParams.page : 1;
+  const pageSize = 20;
+  const { allUsers, totalButtons } = await getAllUsers({
+    searchQuery,
+    filter,
+    page,
+    pageSize,
+  });
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Users</h1>
@@ -46,6 +54,14 @@ const Community = async ({ params, searchParams }: URLProps) => {
           </div>
         )}
       </section>
+      {totalButtons > 1 && (
+        <div className="flex-center mt-11 w-full ">
+          <Pagination
+            totalButtons={totalButtons}
+            currentPage={searchParams?.page ? +searchParams.page : 1}
+          />
+        </div>
+      )}
     </>
   );
 };

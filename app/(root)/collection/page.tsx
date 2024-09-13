@@ -8,6 +8,7 @@ import React from "react";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { URLProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 const Collection = async ({ params, searchParams }: URLProps) => {
   const { userId }: { userId: string | null } = auth();
@@ -18,10 +19,14 @@ const Collection = async ({ params, searchParams }: URLProps) => {
 
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
-  const { questions } = await getSavedQuestions({
+  const page = searchParams?.page ? +searchParams.page : 1;
+  const pageSize = 20;
+  const { questions,totalButtons } = await getSavedQuestions({
     clerkId: userId,
     searchQuery,
     filter,
+    page,
+    pageSize,
   });
 
   return (
@@ -67,6 +72,14 @@ const Collection = async ({ params, searchParams }: URLProps) => {
           />
         )}
       </div>
+      {totalButtons > 1 && (
+        <div className="flex-center mt-11 w-full ">
+          <Pagination
+            totalButtons={totalButtons}
+            currentPage={searchParams?.page ? +searchParams.page : 1}
+          />
+        </div>
+      )}
     </>
   );
 };

@@ -1,7 +1,9 @@
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { TagFilters } from "@/constants/filters";
+import { ITag } from "@/database/tag.model";
 import { getAllTags } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
 import Link from "next/link";
@@ -11,7 +13,14 @@ const Community = async ({ params, searchParams }: URLProps) => {
   //   const { allUsers } = await getAllUsers({});
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
-  const { allTags } = await getAllTags({ searchQuery, filter });
+  const page = searchParams?.page ? +searchParams.page : 1;
+  const pageSize = 20;
+  const { allTags, totalButtons } = await getAllTags({
+    searchQuery,
+    filter,
+    page,
+    pageSize,
+  });
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>
@@ -63,6 +72,14 @@ const Community = async ({ params, searchParams }: URLProps) => {
           />
         )}
       </section>
+      {totalButtons > 1 && (
+        <div className="flex-center mt-11 w-full ">
+          <Pagination
+            totalButtons={totalButtons}
+            currentPage={searchParams?.page ? +searchParams.page : 1}
+          />
+        </div>
+      )}
     </>
   );
 };
