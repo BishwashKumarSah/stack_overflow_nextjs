@@ -15,8 +15,8 @@ interface Props {
   itemId: string;
   userId: string;
   upvotes: number;
-  hasUpvoted: boolean;
-  hasDownvoted: boolean;
+  hasUpVoted: boolean;
+  hasDownVoted: boolean;
   downvotes: number;
   hasSaved?: boolean;
 }
@@ -26,8 +26,8 @@ const Voting = ({
   itemId,
   userId,
   upvotes,
-  hasUpvoted,
-  hasDownvoted,
+  hasUpVoted,
+  hasDownVoted,
   downvotes,
   hasSaved,
 }: Props) => {
@@ -50,34 +50,34 @@ const Voting = ({
         await upVoteQuestion({
           questionId: JSON.parse(itemId),
           userId: JSON.parse(userId),
-          hasUpVoted: hasUpvoted,
-          hasDownVoted: hasDownvoted,
+          hasUpVoted,
+          hasDownVoted,
           path: pathname,
         });
       } else if (type === "Answer") {
         await upVoteAnswer({
           answerId: JSON.parse(itemId),
           userId: JSON.parse(userId),
-          hasUpVoted: hasUpvoted,
-          hasDownVoted: hasDownvoted,
+          hasUpVoted,
+          hasDownVoted,
           path: pathname,
         });
       }
-    } else if (action === "downvote") {
+    } else {
       if (type === "Question") {
         await downVoteQuestion({
           questionId: JSON.parse(itemId),
           userId: JSON.parse(userId),
-          hasUpVoted: hasUpvoted,
-          hasDownVoted: hasDownvoted,
+          hasUpVoted,
+          hasDownVoted,
           path: pathname,
         });
       } else if (type === "Answer") {
         await downVoteAnswer({
           answerId: JSON.parse(itemId),
           userId: JSON.parse(userId),
-          hasUpVoted: hasUpvoted,
-          hasDownVoted: hasDownvoted,
+          hasUpVoted,
+          hasDownVoted,
           path: pathname,
         });
       }
@@ -106,7 +106,7 @@ const Voting = ({
           <Image
             onClick={() => handleVote("upvote")}
             src={
-              hasUpvoted
+              hasUpVoted
                 ? "/assets/icons/upvoted.svg"
                 : "/assets/icons/upvote.svg"
             }
@@ -125,7 +125,7 @@ const Voting = ({
           <Image
             onClick={() => handleVote("downvote")}
             src={
-              hasDownvoted
+              hasDownVoted
                 ? "/assets/icons/downvoted.svg"
                 : "/assets/icons/downvote.svg"
             }
@@ -162,4 +162,3 @@ const Voting = ({
 };
 
 export default Voting;
-  

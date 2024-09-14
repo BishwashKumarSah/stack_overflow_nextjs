@@ -1,4 +1,6 @@
 import { model, models, Document, Schema } from "mongoose";
+import Question from "./question.model";
+import Interaction from "./interaction.model";
 
 export interface IAnswer extends Document {
   author: Schema.Types.ObjectId;
@@ -40,6 +42,18 @@ const AnswerSchema = new Schema<IAnswer>({
     type: Date,
     default: Date.now,
   },
+});
+
+AnswerSchema.post("findOneAndDelete", async function (doc) {
+  console.log("inside");
+  if (doc) {
+    console.log("inside answer model", doc);
+    await Question.updateMany(
+      { _id: doc.question },
+      { $pull: { answers: doc._id } }
+    );
+    await Interaction.deleteMany({ answer: doc._id });
+  }
 });
 
 const Answer = models.Answer || model<IAnswer>("Answer", AnswerSchema);

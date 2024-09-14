@@ -30,7 +30,7 @@ const AnswerForm = (params: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mode } = useCustomTheme();
 
-  const { question, questionId, authorId } = params;
+  const { questionId, authorId } = params;
 
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),

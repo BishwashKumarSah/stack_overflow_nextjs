@@ -1,25 +1,99 @@
 "use server";
 
-import Question from "@/database/question.model";
 import { connectToDatabase } from "../connectToDb";
 import Tag from "@/database/tag.model";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
+  GetUserStatsParams,
   QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import { FilterQuery, PipelineStage } from "mongoose";
+import Question, { IQuestion } from "@/database/question.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const questions = await Question.find({})
-      .populate({ path: "tags", model: Tag })
-      .populate({ path: "author", model: User })
-      .sort({ createdAt: -1 });
-    return { questions };
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
+    const query: FilterQuery<IQuestion> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { description: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    // Main aggregation pipeline stages
+    const mainPipeline: PipelineStage[] = [
+      { $match: query },
+      {
+        $lookup: {
+          from: "tags",
+          localField: "tags",
+          foreignField: "_id",
+          as: "tags",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+    ];
+
+    // Apply sorting based on the filter
+    switch (filter) {
+      case "newest":
+        mainPipeline.push({ $sort: { createdAt: -1 } });
+        break;
+      case "frequent":
+        mainPipeline.push({ $sort: { views: -1 } });
+        break;
+      case "unanswered":
+        mainPipeline.push(
+          {
+            $addFields: { answercount: { $size: "$answers" } },
+          },
+          { $match: { answercount: 0 } },
+          { $sort: { createdAt: -1 } }
+        );
+        break;
+      default:
+        break;
+    }
+
+    // Define the $facet stage separately
+    const facetStage: PipelineStage[] = [
+      {
+        $facet: {
+          metadata: [{ $count: "totalDocuments" }],
+          questions: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+        },
+      },
+    ];
+
+    // Combine the main pipeline with the facet stage
+    const aggregatePipeline: PipelineStage[] = [...mainPipeline, ...facetStage];
+
+    const result = await Question.aggregate(aggregatePipeline).exec();
+
+    // console.log("RESULT", result[0].metadata,result[0].questions);
+
+    const totalDocuments = result[0]?.metadata?.[0]?.totalDocuments || 0;
+
+    const totalButtons = Math.ceil(totalDocuments / pageSize);
+    const questions = result[0]?.questions || [];
+
+    return { questions, totalButtons };
   } catch (error) {
     console.log(error);
     throw error;
@@ -109,7 +183,7 @@ export async function upVoteQuestion(params: QuestionVoteParams) {
     if (!question) {
       throw new Error("Question Not Found!");
     }
-
+    console.log("Question", question);
     // TODO: Increase the reputation
 
     revalidatePath(path);
@@ -144,6 +218,113 @@ export async function downVoteQuestion(params: QuestionVoteParams) {
     // TODO: Increase the reputation
 
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const totalQuestions = await Question.countDocuments({ author: userId });
+    const questions = await Question.find({ author: userId })
+      .populate({ path: "tags", model: Tag, select: "_id name" })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id name username clerkId picture",
+      });
+
+    // ? If we use a - b then it will sort in ascending but b-a will sort in descending
+    // ? Picks two elements, a and b.
+    // ? The function checks the length of b.scores and subtracts the length of a.scores.
+    // ? If the result is positive, b should come before a (meaning b has more scores than a).
+    // ? If the result is negative, a should come before b (meaning a has more scores than b).
+    // ? If the result is zero, their order stays the same.
+
+    questions.sort((a, b) => {
+      // First, compare by views
+      if (b.views !== a.views) {
+        return b.views - a.views;
+      }
+      // If views are equal, compare by the number of upvotes
+      return b.upvotes.length - a.upvotes.length;
+    });
+
+    const limit = pageSize || 10;
+    const skip = (page - 1) * limit;
+
+    const totalButtons = Math.ceil(totalQuestions / limit);
+
+    const paginatedQuestions = questions.slice(skip, skip + limit);
+
+    return { totalQuestions, Questions: paginatedQuestions, totalButtons };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteQuestionsById(params: DeleteQuestionParams) {
+  try {
+    const { questionId, path } = params;
+
+    await connectToDatabase();
+    await Question.findOneAndDelete({ _id: questionId });
+    //! Check the Question Schema for further deletion like tags,answers,interaction
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function updateQuestiion(params: EditQuestionParams) {
+  // eslint-disable-next-line no-empty
+  try {
+    connectToDatabase();
+    const { questionId, title, description, path } = params;
+
+    const question = await Question.findByIdAndUpdate(
+      questionId,
+      { title, description },
+      { new: true }
+    );
+
+    // If the question does not exist, return an error or throw an exception
+    if (!question) {
+      throw new Error("Question not found with the given ID");
+    }
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getTopQuestions() {
+  // eslint-disable-next-line no-empty
+  try {
+    connectToDatabase();
+    const TopQuestions = await Question.aggregate([
+      {
+        $addFields: {
+          upvotescount: { $size: "$upvotes" },
+        },
+      },
+      {
+        $sort: {
+          views: -1,
+          upvotescount: -1,
+        },
+      },
+      { $limit: 5 },
+    ]);
+
+    return { TopQuestions };
   } catch (error) {
     console.log(error);
     throw error;

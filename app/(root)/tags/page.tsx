@@ -1,15 +1,26 @@
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { TagFilters } from "@/constants/filters";
+import { ITag } from "@/database/tag.model";
 import { getAllTags } from "@/lib/actions/tag.action";
+import { URLProps } from "@/types";
 import Link from "next/link";
-
 import React from "react";
 
-const Community = async () => {
+const Community = async ({ params, searchParams }: URLProps) => {
   //   const { allUsers } = await getAllUsers({});
-  const { allTags } = await getAllTags({});
+  const searchQuery = searchParams.q;
+  const filter = searchParams.filter;
+  const page = searchParams?.page ? +searchParams.page : 1;
+  const pageSize = 20;
+  const { allTags, totalButtons } = await getAllTags({
+    searchQuery,
+    filter,
+    page,
+    pageSize,
+  });
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>
@@ -34,7 +45,7 @@ const Community = async () => {
                 <article className="background-light900_dark200 light-border flex w-full flex-col rounded-2xl border px-8 py-10 sm:w-[260px]">
                   <div className="background-light800_dark400 w-fit rounded-sm px-5 py-1.5">
                     <p className="paragraph-semibold text-dark300_light900">
-                      {tag.name}
+                      {tag.name.toUpperCase()}
                     </p>
                   </div>
                   <p className="small-medium text-dark400_light500 mt-3.5">
@@ -61,6 +72,14 @@ const Community = async () => {
           />
         )}
       </section>
+      {totalButtons > 1 && (
+        <div className="flex-center mt-11 w-full ">
+          <Pagination
+            totalButtons={totalButtons}
+            currentPage={searchParams?.page ? +searchParams.page : 1}
+          />
+        </div>
+      )}
     </>
   );
 };

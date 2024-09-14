@@ -10,8 +10,9 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserById } from "@/lib/actions/user.action";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Voting from "@/components/shared/Voting";
+import { URLProps } from "@/types";
 
-const QuestionDetails = async ({ params, searchParams }) => {
+const QuestionDetails = async ({ params, searchParams }: URLProps) => {
   const QuestionDetails = await getQuestionsById({ questionId: params.id });
   if (!QuestionDetails) {
     return (
@@ -24,7 +25,8 @@ const QuestionDetails = async ({ params, searchParams }) => {
   const { userId: clerkId }: { userId: string | null } = auth();
   let mongoUser;
   if (clerkId) {
-    mongoUser = await getUserById({ userId: clerkId });
+    const { user } = await getUserById({ userId: clerkId });
+    mongoUser = user;
   }
   return (
     <div className="flex w-full flex-col ">
@@ -47,8 +49,8 @@ const QuestionDetails = async ({ params, searchParams }) => {
             itemId={JSON.stringify(QuestionDetails._id)}
             userId={JSON.stringify(mongoUser._id)}
             upvotes={QuestionDetails.upvotes.length}
-            hasUpvoted={QuestionDetails.upvotes.includes(mongoUser._id)}
-            hasDownvoted={QuestionDetails.downvotes.includes(mongoUser._id)}
+            hasUpVoted={QuestionDetails.upvotes.includes(mongoUser._id)}
+            hasDownVoted={QuestionDetails.downvotes.includes(mongoUser._id)}
             downvotes={QuestionDetails.downvotes.length}
             hasSaved={mongoUser.saved.includes(QuestionDetails._id)}
           />
@@ -93,6 +95,7 @@ const QuestionDetails = async ({ params, searchParams }) => {
         questionId={QuestionDetails._id}
         questionCount={QuestionDetails.answers.length}
         userId={mongoUser._id}
+        filter={searchParams.filter}
       />
       <AnswerForm
         question={QuestionDetails.description}

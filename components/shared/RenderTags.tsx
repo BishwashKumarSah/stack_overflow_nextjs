@@ -23,6 +23,3 @@ const RenderTags = ({ title, _id, questionsCount, showCount }: Props) => {
 };
 
 export default RenderTags;
-
-
-

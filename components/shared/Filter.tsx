@@ -8,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter, useSearchParams } from "next/navigation";
+import { formQueryUrl } from "@/lib/utils";
 
 interface HomePageFilterProps {
   filters: {
@@ -18,8 +20,25 @@ interface HomePageFilterProps {
 }
 
 const Filter = ({ filters, otherClasses }: HomePageFilterProps) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const paramFilter = searchParams.get("filter");
+
+  const handleFilterParams = (value: string) => {
+    const newUrl = formQueryUrl({
+      params: searchParams.toString(),
+      key: "filter",
+      value,
+    });
+    router.push(newUrl, { scroll: false });
+  };
+
   return (
-    <Select>
+    <Select
+      onValueChange={handleFilterParams}
+      defaultValue={paramFilter || undefined}
+    >
       <SelectTrigger
         className={`${otherClasses} background-light800_dark300 text-dark500_light700`}
       >

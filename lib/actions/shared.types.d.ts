@@ -13,7 +13,7 @@ export interface CreateAnswerParams {
 // Interface for fetching answers with optional pagination and sorting
 export interface GetAnswersParams {
   questionId: string;
-  sortBy?: string;
+  filter?: string;
   page?: number;
   pageSize?: number;
 }
@@ -101,7 +101,7 @@ export interface DeleteQuestionParams {
 export interface EditQuestionParams {
   questionId: string;
   title: string;
-  content: string;
+  description: string;
   path: string;
 }
 
