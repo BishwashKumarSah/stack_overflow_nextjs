@@ -61,9 +61,9 @@ const QuestionCard = ({
       <div className="flex flex-wrap gap-5">
         {tags?.length > 0 &&
           tags.map((tag) => (
-            <RenderTags key={tag._id} title={tag.name} _id={JSON.stringify(tag._id)} />
+            <RenderTags key={tag._id} title={tag.name} _id={tag._id} />
           ))}
-      </div>     
+      </div>
       <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-2">
         <Metric
           imgUrl={author.picture}
