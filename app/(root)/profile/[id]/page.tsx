@@ -13,10 +13,9 @@ import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswerTab from "@/components/shared/AnswerTab";
 
-
 const ProfileDetails = async ({ params, searchParams }: URLProps) => {
-  const { user, totalAnswersCount, totalQuestionsCount } =
-    await getUserDetailsById({ userId: params.id });  
+  const { user, totalAnswersCount, totalQuestionsCount, badgesObj,reputation } =
+    await getUserDetailsById({ userId: params.id });
 
   const page = searchParams?.page ? +searchParams.page : 1;
   const pageSize = 10;
@@ -71,6 +70,8 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
       <Stats
         totalQuestions={totalQuestionsCount}
         totalAnswers={totalAnswersCount}
+        badgeCounts={badgesObj}
+        reputation={reputation}
       />
       <div className="mt-9">
         <Tabs defaultValue="top_posts" className="flex-1">

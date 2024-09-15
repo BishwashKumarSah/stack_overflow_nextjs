@@ -15,6 +15,7 @@ import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import { FilterQuery, PipelineStage } from "mongoose";
 import Question, { IQuestion } from "@/database/question.model";
+import Interaction from "@/database/interaction.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -155,6 +156,17 @@ export async function createQuestion(params: CreateQuestionParams) {
       $push: { tags: { $each: tagDocument } },
     });
 
+    // Here we are creating Interaction for //! Recommendation system
+    await Interaction.create({
+      userId: author,
+      action: "ask_question",
+      question: question._id,
+      tags: tagDocument,
+    });
+
+    // ? Increase the author reputation for creating a question.
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -183,8 +195,20 @@ export async function upVoteQuestion(params: QuestionVoteParams) {
     if (!question) {
       throw new Error("Question Not Found!");
     }
-    console.log("Question", question);
-    // TODO: Increase the reputation
+
+    // Increase the reputation
+
+    // Here if the user has already upvoted then if again if he click the upvote button we need to undo the prev upvote and decrease the
+    // reputation by -1. else increase the reputation by +1 cuz he is contributing to the site
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasUpVoted ? -1 : 1 },
+    });
+
+    // If other user has upvoted the author question then it should also increase the author reputations.
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasUpVoted ? -10 : 10 },
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -215,7 +239,13 @@ export async function downVoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question Not Found!");
     }
 
-    // TODO: Increase the reputation
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasDownVoted ? 2 : -2 },
+    });
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasDownVoted ? 10 : -10 },
+    });
 
     revalidatePath(path);
   } catch (error) {

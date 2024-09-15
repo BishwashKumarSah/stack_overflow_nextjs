@@ -56,6 +56,7 @@ const UserSchema = new Schema(
     ],
     reputation: {
       type: Number,
+      default: 0,
     },
     bio: {
       type: String,

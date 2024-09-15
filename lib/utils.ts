@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import qs from "query-string";
+import { BadgeCounts, BadgeCriteriaType } from "@/types";
+import { BADGE_CRITERIA } from "@/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -191,10 +193,43 @@ export const getButtons = ({ currentPage, totalButtons }: getButtonsProps) => {
     for (let i = startPage; i <= endPage; i++) {
       buttons.push(i);
     }
-    
+
     buttons.push("...");
     buttons.push(totalButtons);
   }
   console.log({ buttons });
   return buttons;
+};
+
+interface BadgeParams {
+  criteria: {
+    type: keyof typeof BADGE_CRITERIA;
+    count: number;
+  }[];
+}
+
+export const getBadgesNumber = ({ criteria }: BadgeParams) => {
+  const badgesCount: BadgeCounts = {
+    GOLD: 0,
+    SILVER: 0,
+    BRONZE: 0,
+  };
+
+  criteria.forEach((item) => {
+    const { type, count } = item;
+    const badgesLevel: any = BADGE_CRITERIA[type];
+
+    if (badgesLevel) {
+      if (count >= badgesLevel.GOLD) {
+        const total = Math.floor(count / badgesLevel.GOLD);
+        badgesCount.GOLD += total;
+      } else if (count >= badgesLevel.SILVER) {
+        badgesCount.SILVER += 1;
+      } else if (count >= badgesLevel.BRONZE) {
+        badgesCount.BRONZE++;
+      }
+    }
+  });
+
+  return badgesCount;
 };

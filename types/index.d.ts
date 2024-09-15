@@ -69,4 +69,31 @@ export interface BadgeCriteria {
   TOTAL_VIEWS: BadgeLevel;
 }
 
+
+// interface CarInterface {
+//   engine: string;
+//   wheels: number;
+//   color: string;
+// }
+
+// const carObject = {
+//   engine: "V8",
+//   wheels: 4,
+//   color: "red",
+// };
+
+// type CarKeysFromInterface = keyof CarInterface; // "engine" | "wheels" | "color"
+// type CarKeysFromObject = keyof typeof carObject; // "engine" | "wheels" | "color"
+
+// if we change 
+// Adding a new property to the object
+// carObject["doors"] = 4; // New property added to carObject
+
+// type CarKeysFromInterface = keyof CarInterface; // "engine" | "wheels" | "color"
+// type CarKeysFromObject = keyof typeof carObject; // "engine" | "wheels" | "color" | "doors"
+
+// keyof Interface: Use this when you want to get the keys from the blueprint (interface). This is static and won't change unless the interface changes.
+
+// keyof typeof Object: Use this when you want to get the keys from the actual object. This will always reflect the current properties of the object, including any changes made dynamically at runtime.
+
 export type BadgeCriteriaType = keyof typeof BADGE_CRITERIA;

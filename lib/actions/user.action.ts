@@ -18,6 +18,8 @@ import Question, { IQuestion } from "@/database/question.model";
 
 import Answer from "@/database/answer.model";
 import { redirect } from "next/navigation";
+import { BadgeCriteriaType } from "@/types";
+import { getBadgesNumber } from "../utils";
 
 export const getAllUsers = async (params: GetAllUsersParams) => {
   try {
@@ -326,10 +328,8 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       throw new Error("No User Found!");
     }
 
-    
-
     const savedQuestions = userResults[0].paginatedResults.map(
-      (user:Partial<IUser>) => user.saved
+      (user: Partial<IUser>) => user.saved
     );
     const totalDocuments =
       userResults[0].totalDocuments.length > 0
@@ -365,7 +365,64 @@ export const getUserDetailsById = async (params: GetUserByIdParams) => {
 
     const totalAnswersCount = await Answer.countDocuments({ author: user._id });
 
-    return { user, totalAnswersCount, totalQuestionsCount };
+    // ? since questionUpvotes is any array cuz of aggregate so we can just use [x] to get the first index like destructuring
+    const [questionUpvotes] = await Question.aggregate([
+      { $match: { author: user._id } },
+      { $project: { _id: 0, upvotes: { $size: "$upvotes" } } },
+      {
+        $group: {
+          _id: null, // We're not grouping by any specific field, just aggregating all documents
+          totalUpvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    // Get the total AnswerUpvotes of a particular User by author id. cuz he is the one who created the answer/question
+    const [answerUpvotes] = await Answer.aggregate([
+      { $match: { author: user._id } },
+      { $project: { _id: 0, upvotes: { $size: "$upvotes" } } },
+      {
+        $group: {
+          _id: null, // We're not grouping by any specific field, just aggregating all documents
+          totalUpvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    const [questionViews] = await Question.aggregate([
+      { $match: { author: user._id } },
+      { $group: { _id: null, totalViews: { $sum: "$views" } } },
+    ]);
+    // console.log({ questionUpvotes });
+    // console.log({ answerUpvotes });
+    // console.log({ questionViews });
+
+    const criteria = [
+      {
+        type: "QUESTION_COUNT" as BadgeCriteriaType,
+        count: totalQuestionsCount,
+      },
+      {
+        type: "ANSWER_COUNT" as BadgeCriteriaType,
+        count: totalAnswersCount,
+      },
+      {
+        type: "QUESTION_UPVOTES" as BadgeCriteriaType,
+        count: questionUpvotes?.totalUpvotes || 0,
+      },
+      {
+        type: "ANSWER_UPVOTES" as BadgeCriteriaType,
+        count: answerUpvotes?.totalUpvotes || 0,
+      },
+      {
+        type: "TOTAL_VIEWS" as BadgeCriteriaType,
+        count: questionViews?.totalViews || 0,
+      },
+    ];
+
+    const badgesObj = getBadgesNumber({ criteria });
+    const reputation = user.reputation
+    return { user, totalAnswersCount, totalQuestionsCount, badgesObj,reputation };
   } catch (error) {
     console.log(error);
     throw error;

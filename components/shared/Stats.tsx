@@ -1,4 +1,5 @@
 import { formatNumber } from "@/lib/utils";
+import { BadgeCounts } from "@/types";
 import Image from "next/image";
 import React from "react";
 
@@ -10,7 +11,7 @@ interface BadgeProps {
 
 const BadgeCard = ({ imgUrl, title, value }: BadgeProps) => {
   return (
-    <div className="flex flex-wrap flex-col max-md:flex-row gap-5 background-light900_dark300 shadow-light-300 dark:shadow-dark-300 border p-6">
+    <div className="background-light900_dark300 flex flex-col flex-wrap gap-5 border p-6 shadow-light-300 dark:shadow-dark-300 max-md:flex-row">
       <Image src={imgUrl} alt="Badge" width={30} height={30} />
       <div className="flex flex-col gap-1">
         <p className="paragraph-semibold text-dark200_light900">{value}</p>
@@ -23,13 +24,22 @@ const BadgeCard = ({ imgUrl, title, value }: BadgeProps) => {
 interface StatsProps {
   totalQuestions: number;
   totalAnswers: number;
+  badgeCounts: BadgeCounts;
+  reputation: number;
 }
-const Stats = ({ totalQuestions, totalAnswers }: StatsProps) => {
+const Stats = ({
+  totalQuestions,
+  totalAnswers,
+  badgeCounts,
+  reputation,
+}: StatsProps) => {
   return (
     <>
-      <h4 className="h3-semibold text-dark300_light700 mt-11">Stats</h4>
-      <div className="grid mt-5 grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="flex flex-wrap gap-5 justify-evenly background-light900_dark300 shadow-light-300 items-center dark:shadow-dark-300 border p-6">
+      <h4 className="h3-semibold text-dark300_light700 mt-11">
+        Stats - {reputation}
+      </h4>
+      <div className="mt-5 grid grid-cols-2 gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div className="background-light900_dark300 flex flex-wrap items-center justify-evenly gap-5 border p-6 shadow-light-300 dark:shadow-dark-300">
           <div className="flex flex-col flex-wrap items-center gap-1">
             <p className="paragraph-semibold text-dark200_light900">
               {formatNumber(totalQuestions)}
@@ -46,17 +56,17 @@ const Stats = ({ totalQuestions, totalAnswers }: StatsProps) => {
         <BadgeCard
           imgUrl="/assets/icons/gold-medal.svg"
           title="Gold Badges"
-          value={0}
+          value={badgeCounts.GOLD}
         />
         <BadgeCard
           imgUrl="/assets/icons/silver-medal.svg"
           title="Silver Badges"
-          value={0}
+          value={badgeCounts.SILVER}
         />
         <BadgeCard
           imgUrl="/assets/icons/bronze-medal.svg"
           title="Bronze Badges"
-          value={0}
+          value={badgeCounts.BRONZE}
         />
       </div>
     </>

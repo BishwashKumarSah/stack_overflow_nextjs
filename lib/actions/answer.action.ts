@@ -13,6 +13,7 @@ import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import User from "@/database/user.model";
 import { PipelineStage } from "mongoose";
+import Interaction from "@/database/interaction.model";
 
 export const createAnswer = async (params: CreateAnswerParams) => {
   try {
@@ -21,10 +22,23 @@ export const createAnswer = async (params: CreateAnswerParams) => {
     const newAnswer = await Answer.create({ content, author, question });
 
     // Add the answer to the question's answers array.
-    await Question.findByIdAndUpdate(question, {
+    const newQuestion = await Question.findByIdAndUpdate(question, {
       $push: { answers: newAnswer._id },
     });
-    // TODO: Increase the reputations
+
+    // * Create an Interaction for the Recommendation system
+    await Interaction.create({
+      userId: author,
+      action: "answer",
+      question,
+      answer: newAnswer._id,
+      tags: newQuestion.tags,
+    });
+
+    // * Increase the author reputation for creating an answer +10
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -111,7 +125,6 @@ export async function upVoteAnswer(params: AnswerVoteParams) {
     connectToDatabase();
     const { userId, answerId, hasDownVoted, hasUpVoted, path } = params;
 
-    console.log({ userId, answerId, hasDownVoted, hasUpVoted, path });
     let QueryObj = {};
 
     if (hasUpVoted) {
@@ -126,13 +139,19 @@ export async function upVoteAnswer(params: AnswerVoteParams) {
       new: true,
     });
 
-    console.log("ANswer", answer);
-
     if (!answer) {
       throw new Error("Answer Not Found!");
     }
 
-    // TODO: Increase the reputation
+    // If they have upvoted to other users. increase by +2/-2
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasUpVoted ? -2 : 2 },
+    });
+
+    // If they have received upvotes from others.
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasUpVoted ? -10 : 10 },
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -163,7 +182,17 @@ export async function downVoteAnswer(params: AnswerVoteParams) {
       throw new Error("Answer Not Found!");
     }
 
-    // TODO: Increase the reputation
+    
+
+    // If they have upvoted to other users. increase by +2/-2
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasDownVoted ? 2 : -2 },
+    });
+
+    // If they have received upvotes from others.
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasDownVoted ? 10 : -10 },
+    });
 
     revalidatePath(path);
   } catch (error) {
