@@ -355,6 +355,39 @@ export const getUserDetailsById = async (params: GetUserByIdParams) => {
     const { userId } = params;
     const user = await User.findOne({ clerkId: userId });
 
+    const aggregatePipeline: PipelineStage[] = [
+      { $match: { clerkId: userId } },
+      {
+        $lookup: {
+          from: "questions",
+          foreignField: "author",
+          localField: "_id",
+          as: "questionsTags",
+        },
+      },
+      { $unwind: { path: "$questionsTags" } },
+      {
+        $lookup: {
+          from: "tags",
+          foreignField: "_id",
+          localField: "questionsTags.tags",
+          as: "userTags",
+        },
+      },
+      { $unwind: { path: "$userTags" } },
+      {
+        $group: {
+          _id: "$userTags._id",
+          count: { $sum: 1 },
+          name: { $first: "$userTags.name" },
+          description: { $first: "$userTags.description" },
+        },
+      },
+      { $project: { _id: 1, name: 1, count: 1 } },
+      { $sort: { count: -1 } },
+    ];
+    const newUser = await User.aggregate(aggregatePipeline);
+
     if (!user) {
       return redirect("/");
     }
@@ -421,8 +454,15 @@ export const getUserDetailsById = async (params: GetUserByIdParams) => {
     ];
 
     const badgesObj = getBadgesNumber({ criteria });
-    const reputation = user.reputation
-    return { user, totalAnswersCount, totalQuestionsCount, badgesObj,reputation };
+    const reputation = user.reputation;
+    return {
+      user,
+      totalAnswersCount,
+      totalQuestionsCount,
+      badgesObj,
+      reputation,
+      topTags: newUser,
+    };
   } catch (error) {
     console.log(error);
     throw error;

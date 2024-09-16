@@ -9,7 +9,8 @@ import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.action";
 import { URLProps } from "@/types";
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
+import Loading from "./Loading";
 
 const Home = async ({ params, searchParams }: URLProps) => {
   const searchQuery = searchParams.q;
@@ -24,8 +25,9 @@ const Home = async ({ params, searchParams }: URLProps) => {
     pageSize,
   });
 
+  
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <div className="flex w-full justify-between max-sm:flex-col-reverse sm:items-center">
         <h1 className="h1-bold text-dark100_light900">All Questions</h1>
         <Link href={`/ask-question`} className="flex justify-end ">
@@ -50,7 +52,7 @@ const Home = async ({ params, searchParams }: URLProps) => {
       <HomeFilters />
       <div className="flex w-full flex-col gap-6">
         {questions.length > 0 ? (
-          questions.map((question) => {
+          questions.map((question:any) => {
             return (
               <QuestionCard
                 key={question._id}
@@ -84,7 +86,7 @@ const Home = async ({ params, searchParams }: URLProps) => {
           />
         </div>
       )}
-    </>
+    </Suspense>
   );
 };
 

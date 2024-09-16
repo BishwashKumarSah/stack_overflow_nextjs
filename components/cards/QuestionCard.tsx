@@ -40,7 +40,7 @@ const QuestionCard = ({
   const parsedClerkId = clerkId ? JSON.parse(clerkId) : "";
   const showActionButtons = parsedClerkId && parsedClerkId === author.clerkId;
   return (
-    <div className="card-wrapper mt-9 rounded-md px-6 py-4">
+    <div className="card-wrapper mt-9 rounded-md px-9 py-8">
       <div className="flex w-full flex-col items-start ">
         <div className="subtle-regular text-light400_light500 hidden max-sm:flex">
           {getTimesAgo(createdAt)}

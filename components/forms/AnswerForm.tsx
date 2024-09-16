@@ -28,9 +28,10 @@ const AnswerForm = (params: Props) => {
   const pathname = usePathname();
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAiSubmitting, setIsAiSubmitting] = useState(false);
   const { mode } = useCustomTheme();
 
-  const { questionId, authorId } = params;
+  const { questionId, authorId, question } = params;
 
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
@@ -64,6 +65,39 @@ const AnswerForm = (params: Props) => {
     }
   };
 
+  const handleCreateAiAnswer = async () => {
+    if (!authorId) return;
+    setIsAiSubmitting(true);
+    try {
+      const URL = `${process.env.NEXT_PUBLIC_HOST_URL}/api/chatgpt`;
+
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question }), // Ensure 'question' is an object with the correct structure
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const { answer } = await response.json();
+      // const formattedAnswer = answer.replace(/\n/g, "<br/>");
+
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+
+        editor.setContent(answer);
+      }
+    } catch (error) {
+      console.error("AI Answer Generation Error", error);
+    } finally {
+      setIsAiSubmitting(false);
+    }
+  };
+
   return (
     <div>
       <div className="mt-9 flex justify-between">
@@ -72,15 +106,23 @@ const AnswerForm = (params: Props) => {
         </h4>
         <Button
           className="light-border-2 btn flex gap-2 px-4 py-2.5"
-          onClick={() => {}}
+          onClick={handleCreateAiAnswer}
         >
-          <Image
-            src="/assets/icons/stars.svg"
-            alt="Stars"
-            width={15}
-            height={15}
-          />
-          <p className="text-primary-500">Generate Ai Answer</p>
+          {isAiSubmitting ? (
+            <>
+              <p className="text-primary-500">Generating...</p>
+            </>
+          ) : (
+            <>
+              <Image
+                src="/assets/icons/stars.svg"
+                alt="Stars"
+                width={15}
+                height={15}
+              />
+              <p className="text-primary-500">Generate Ai Answer</p>
+            </>
+          )}
         </Button>
       </div>
       <Form {...form}>
@@ -131,7 +173,8 @@ const AnswerForm = (params: Props) => {
                       body { 
                         font-family:Inter,Arial,sans-serif; 
                         font-size:16px;                        
-                        color: black;
+                        color: ${mode === "dark" || mode === "system" ? "white" : "black"};
+                        caret-color: ${mode === "dark" || mode === "system" ? "white" : "black"};
                       }                               
                     `,
                       skin:

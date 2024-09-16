@@ -7,22 +7,31 @@ import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+
+import React, { Suspense } from "react";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswerTab from "@/components/shared/AnswerTab";
+import ProfileDetailsLoading from "./Loading";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 const ProfileDetails = async ({ params, searchParams }: URLProps) => {
-  const { user, totalAnswersCount, totalQuestionsCount, badgesObj,reputation } =
-    await getUserDetailsById({ userId: params.id });
+  const {
+    user,
+    totalAnswersCount,
+    totalQuestionsCount,
+    badgesObj,
+    reputation,
+    topTags,
+  } = await getUserDetailsById({ userId: params.id });
 
   const page = searchParams?.page ? +searchParams.page : 1;
   const pageSize = 10;
   const { userId: clerkId } = auth();
 
   return (
-    <>
+    <Suspense fallback={<ProfileDetailsLoading />}>
       <div className="flex flex-col-reverse justify-between lg:flex-row">
         <div className="flex flex-col items-start gap-5 lg:flex-row">
           <Image
@@ -73,41 +82,65 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
         badgeCounts={badgesObj}
         reputation={reputation}
       />
-      <div className="mt-9">
-        <Tabs defaultValue="top_posts" className="flex-1">
-          <TabsList className="background-light800_dark400 min-h-[42px] p-1.5">
-            <TabsTrigger
-              value="top_posts"
-              className="min-h-full rounded-md bg-light-800 text-light-500 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:bg-dark-400 dark:data-[state=active]:bg-dark-300 "
-            >
-              Top Posts
-            </TabsTrigger>
-            <TabsTrigger
-              value="answers"
-              className="min-h-full rounded-md bg-light-800 text-light-500 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:bg-dark-400 dark:data-[state=active]:bg-dark-300 "
-            >
-              Answers
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="top_posts">
-            <QuestionTab
-              clerkId={JSON.stringify(clerkId)}
-              userId={JSON.stringify(user._id)}
-              page={page}
-              pageSize={pageSize}
-            />
-          </TabsContent>
-          <TabsContent value="answers">
-            <AnswerTab
-              clerkId={JSON.stringify(clerkId)}
-              userId={JSON.stringify(user._id)}
-              page={page}
-              pageSize={pageSize}
-            />
-          </TabsContent>
-        </Tabs>
+      <div className="mt-9 flex justify-between gap-5">
+        <div>
+          <Tabs defaultValue="top_posts" className="flex-1">
+            <TabsList className="background-light800_dark400 min-h-[42px] p-1.5">
+              <TabsTrigger
+                value="top_posts"
+                className="min-h-full rounded-md bg-light-800 text-light-500 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:bg-dark-400 dark:data-[state=active]:bg-dark-300 "
+              >
+                Top Posts
+              </TabsTrigger>
+              <TabsTrigger
+                value="answers"
+                className="min-h-full rounded-md bg-light-800 text-light-500 data-[state=active]:bg-primary-100 data-[state=active]:text-primary-500 dark:bg-dark-400 dark:data-[state=active]:bg-dark-300 "
+              >
+                Answers
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="top_posts">
+              <QuestionTab
+                clerkId={JSON.stringify(clerkId)}
+                userId={JSON.stringify(user._id)}
+                page={page}
+                pageSize={pageSize}
+              />
+            </TabsContent>
+            <TabsContent value="answers">
+              <AnswerTab
+                clerkId={JSON.stringify(clerkId)}
+                userId={JSON.stringify(user._id)}
+                page={page}
+                pageSize={pageSize}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
+        {topTags.length > 0 && (
+          <div className="max-w-[250px] w-full">
+            <h4 className="h3-semibold text-dark300_light700 text-center">
+              Top Tags
+            </h4>
+            <div className="flex gap-5 flex-col mt-12">
+              {topTags.length > 0 &&
+                topTags.map((tag, ind) => (
+                  <Link
+                    href={`/tags/${tag._id}`}
+                    className="flex justify-between"
+                    key={tag + ind}
+                  >
+                    <Badge className="subtle-medium background-light800_dark300 text-light400_light500 rounded-md border-none  px-4 py-2 uppercase ">
+                      {tag.name}
+                    </Badge>
+                    <p>{tag.count}</p>
+                  </Link>
+                ))}
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </Suspense>
   );
 };
 
