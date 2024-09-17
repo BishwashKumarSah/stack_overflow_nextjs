@@ -17,6 +17,8 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { toast } from "../hooks/use-toast";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 interface Props {
   question: string;
@@ -48,6 +50,10 @@ const AnswerForm = (params: Props) => {
         path: pathname,
         author: JSON.parse(authorId),
         content: values.answer,
+      });
+      toast({
+        title: "Answer Posted",
+        description: "Your answer has successfully been posted.",
       });
 
       form.reset();
@@ -91,6 +97,11 @@ const AnswerForm = (params: Props) => {
 
         editor.setContent(answer);
       }
+      toast({
+        title: "Ai Answer Generated",
+        description:
+          "The Ai has successfully generated answer based on your query.",
+      });
     } catch (error) {
       console.error("AI Answer Generation Error", error);
     } finally {
@@ -105,13 +116,17 @@ const AnswerForm = (params: Props) => {
           Write Your Answer here!
         </h4>
         <Button
-          className="light-border-2 btn flex gap-2 px-4 py-2.5"
+          className="light-border-2 btn flex gap-2 px-4 py-2.5 "
+          disabled={isAiSubmitting}
           onClick={handleCreateAiAnswer}
         >
           {isAiSubmitting ? (
-            <>
-              <p className="text-primary-500">Generating...</p>
-            </>
+            <div className="flex items-center gap-2">
+              <ReloadIcon className="animate-spin items-center text-primary-500" />
+              <p className="body-medium text-dark300_light700 items-center text-primary-500">
+                Generating...
+              </p>
+            </div>
           ) : (
             <>
               <Image

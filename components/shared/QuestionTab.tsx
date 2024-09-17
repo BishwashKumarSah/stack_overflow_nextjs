@@ -13,8 +13,7 @@ interface QuestionTabProps {
 const QuestionTab = async (props: QuestionTabProps) => {
   const { userId, page, pageSize, clerkId } = props;
 
-  const {
-    totalQuestions,
+  const {    
     Questions: questions,
     totalButtons,
   } = await getUserQuestions({

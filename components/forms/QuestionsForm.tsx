@@ -22,6 +22,7 @@ import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
 import useCustomTheme from "@/context/ThemeProvider";
+import { toast } from "../hooks/use-toast";
 
 interface Props {
   mongoUserId: string;
@@ -121,7 +122,10 @@ const QuestionsForm = ({ mongoUserId, questionDetails, type }: Props) => {
           author: JSON.parse(mongoUserId),
           path: pathname,
         });
-
+        toast({
+          title: "Question Posted",
+          description: "Your question has successfully been posted.",
+        });
         router.push("/");
       } else if (type === "Edit") {
         await createQuestion({
@@ -130,6 +134,10 @@ const QuestionsForm = ({ mongoUserId, questionDetails, type }: Props) => {
           tags: values.tags,
           author: JSON.parse(mongoUserId),
           path: pathname,
+        });
+        toast({
+          title: "Question Updated",
+          description: "Your question has successfully been updated.",
         });
 
         router.push("/");
@@ -216,7 +224,7 @@ const QuestionsForm = ({ mongoUserId, questionDetails, type }: Props) => {
                       body { 
                         font-family:Inter,Arial,sans-serif; 
                         font-size:18px;                        
-                        color: black;
+                        color: ${mode === "dark" || mode === "system" ? "white" : "black"};
                       }                      
                     `,
                     skin:

@@ -226,7 +226,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
           as: "saved.tags",
         },
       },
-      { $unwind: { path: "$saved.tags", preserveNullAndEmptyArrays: true } },
+      
       {
         $lookup: {
           from: "users",
@@ -237,26 +237,22 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       },
       { $unwind: { path: "$saved.author", preserveNullAndEmptyArrays: true } },
 
-      // Add this $group stage to remove duplicates based on user._id and saved._id
+      // // Add this $group stage to remove duplicates based on user._id and saved._id
       {
         $group: {
           _id: {
             // userId and savedQuestionId are custom names (aliases) for the respective fields.
             userId: "$_id", // Group by the user's _id
-            savedQuestionId: "$saved._id", // Group by the saved question's _id
+            savedId:"$saved._id"
+            
           },
-          saved: { $first: "$saved" }, // Keep only one instance of saved question
+          saved:{$push:"$saved"},
+          
           clerkId: { $first: "$clerkId" },
           name: { $first: "$name" },
           username: { $first: "$username" },
-          email: { $first: "$email" },
+          email: { $first: "$email" },          
           picture: { $first: "$picture" },
-          bio: { $first: "$bio" },
-          location: { $first: "$location" },
-          portfolioWebsite: { $first: "$portfolioWebsite" },
-          joinedAt: { $first: "$joinedAt" },
-          createdAt: { $first: "$createdAt" },
-          updatedAt: { $first: "$updatedAt" },
         },
       },
       {
@@ -310,6 +306,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
     }
 
     const userResults = await User.aggregate(aggregatePipeline).exec();
+    // console.log("adasd",userResults[0].paginatedResults[0])
 
     // const user = await User.findOne({ clerkId }).populate({
     //   path: "saved",
@@ -329,8 +326,10 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
     }
 
     const savedQuestions = userResults[0].paginatedResults.map(
-      (user: Partial<IUser>) => user.saved
+      (user: any) => user.saved[0]
     );
+    
+
     const totalDocuments =
       userResults[0].totalDocuments.length > 0
         ? userResults[0].totalDocuments[0].total

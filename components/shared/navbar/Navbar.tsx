@@ -9,7 +9,7 @@ import GlobalSearch from "../search/GlobalSearch";
 const Navbar = () => {
   return (
     <nav className="flex-between fixed top-0 z-50 flex w-full gap-5 bg-light-900 p-5 shadow-light-100 dark:bg-dark-200 dark:shadow-none">
-      <Link href="/" className="flex items-center gap-1">
+      <Link href="/" className="flex items-center gap-2">
         <Image
           src="/assets/images/site-logo.svg"
           alt="StackOverflow"
@@ -17,7 +17,7 @@ const Navbar = () => {
           width={23}
         />
         <p className="h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden">
-          Stack <span className="text-primary-500">Overflow</span>
+          Stack<span className="text-primary-500">Overflow</span>
         </p>
       </Link>
       <GlobalSearch />

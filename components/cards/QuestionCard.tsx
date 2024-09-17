@@ -40,7 +40,7 @@ const QuestionCard = ({
   const parsedClerkId = clerkId ? JSON.parse(clerkId) : "";
   const showActionButtons = parsedClerkId && parsedClerkId === author.clerkId;
   return (
-    <div className="card-wrapper mt-9 rounded-md px-9 py-8">
+    <div className="card-wrapper mt-9 rounded-md px-9 py-8 light-border">
       <div className="flex w-full flex-col items-start ">
         <div className="subtle-regular text-light400_light500 hidden max-sm:flex">
           {getTimesAgo(createdAt)}
@@ -58,13 +58,13 @@ const QuestionCard = ({
           </SignedIn>
         </div>
       </div>
-      <div className="flex flex-wrap gap-5">
+      <div className="flex flex-wrap gap-5 mt-1">
         {tags?.length > 0 &&
           tags.map((tag) => (
             <RenderTags key={tag._id} title={tag.name} _id={tag._id} />
           ))}
       </div>
-      <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-2">
+      <div className="mt-9 flex w-full flex-wrap items-center justify-between gap-2">
         <Metric
           imgUrl={author.picture}
           title={`• ${getTimesAgo(createdAt)}`}

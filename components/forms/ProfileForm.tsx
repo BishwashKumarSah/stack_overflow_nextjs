@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { updateUser } from "@/lib/actions/user.action";
 import { usePathname, useRouter } from "next/navigation";
 import { ProfileSchema } from "@/lib/formValidations";
+import { toast } from "../hooks/use-toast";
 
 interface Props {
   clerkId: string;
@@ -46,13 +47,6 @@ const ProfileForm = ({ clerkId, userDetails }: Props) => {
   async function onSubmit(values: z.infer<typeof ProfileSchema>) {
     setIsSubmitting(true);
     try {
-      console.log({
-        name: values.name,
-        username: values.username,
-        portfolioWebsite: values.portfolioWebsite,
-        location: values.location,
-        bio: values.bio,
-      });
       await updateUser({
         clerkId: parsedClerkId,
         updateData: {
@@ -64,6 +58,11 @@ const ProfileForm = ({ clerkId, userDetails }: Props) => {
         },
         path: pathname,
       });
+
+      toast({
+        title: "Profile Updated Successfully",
+      });
+
       router.back();
     } catch (error) {
       console.log("Profile Form Error", error);

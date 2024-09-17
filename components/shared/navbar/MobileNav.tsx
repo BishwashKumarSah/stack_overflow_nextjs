@@ -21,8 +21,7 @@ export const NavContent = () => {
   return (
     <section className="mt-5 flex flex-1 flex-col gap-3">
       {sidebarLinks.map((item) => {
-        const isActive =         
-          pathName === item.route;
+        const isActive = pathName === item.route;
         return (
           <SheetClose asChild key={item.label}>
             <Link
@@ -63,11 +62,11 @@ const MobileNav = () => {
       </SheetTrigger>
       <SheetContent
         side={"left"}
-        className="background-light900_dark200 flex flex-col border-none overflow-y-auto"
+        className="background-light900_dark200 flex flex-col overflow-y-auto border-none"
       >
         <SheetHeader>
           <SheetTitle>
-            <Link href="/" className="flex items-center gap-1">
+            <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/assets/images/site-logo.svg"
                 alt="StackOverflow"
@@ -75,7 +74,7 @@ const MobileNav = () => {
                 width={23}
               />
               <p className="h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900">
-                Stack <span className="text-primary-500">Overflow</span>
+                Stack<span className="text-primary-500">Overflow</span>
               </p>
             </Link>
           </SheetTitle>
@@ -87,14 +86,14 @@ const MobileNav = () => {
           <SignedOut>
             <div className="flex flex-col gap-3">
               <SheetClose asChild>
-                <div className="btn-secondary  min-h-[41px] w-full rounded-lg px-4 text-center flex flex-center text-primary-500 shadow-none">
+                <div className="btn-secondary  flex-center flex min-h-[41px] w-full rounded-lg px-4 text-center text-primary-500 shadow-none">
                   <SignInButton>
                     <button>Sign in </button>
                   </SignInButton>
                 </div>
               </SheetClose>
               <SheetClose asChild>
-                <div className=" background-light850_dark100 min-h-[41px] mb-2 btn-tertiary flex flex-center w-full rounded-lg px-4 text-center dark:text-light-900">
+                <div className=" background-light850_dark100 btn-tertiary flex-center mb-2 flex min-h-[41px] w-full rounded-lg px-4 text-center dark:text-light-900">
                   <SignUpButton>
                     <button>Sign up </button>
                   </SignUpButton>

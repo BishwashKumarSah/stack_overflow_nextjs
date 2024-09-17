@@ -16,10 +16,11 @@ interface HomePageFilterProps {
     name: string;
     value: string;
   }[];
+  type?: boolean;
   otherClasses?: string;
 }
 
-const Filter = ({ filters, otherClasses }: HomePageFilterProps) => {
+const Filter = ({ filters, otherClasses, type }: HomePageFilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -43,7 +44,18 @@ const Filter = ({ filters, otherClasses }: HomePageFilterProps) => {
         className={`${otherClasses} background-light800_dark300 text-dark500_light700`}
       >
         <div className="line-clamp-1 flex-1 text-left">
-          <SelectValue placeholder="Select a Filter" />
+          {type ? (
+            <div className="flex gap-2 items-center">
+              <img
+                src="/assets/icons/location.svg"
+                alt="GPS"
+                className="mr-2"
+              />
+              <SelectValue placeholder="Select Location" />
+            </div>
+          ) : (
+            <SelectValue placeholder="Select a Filter" />
+          )}
         </div>
       </SelectTrigger>
       <SelectContent className="background-light900_dark200 w-full ring-offset-0">
@@ -53,7 +65,7 @@ const Filter = ({ filters, otherClasses }: HomePageFilterProps) => {
               return (
                 <SelectItem
                   key={item.value}
-                  value={item.value}
+                  value={type ? item.name : item.value}
                   className="text-dark300_light700 items-start hover:bg-light-700 dark:hover:bg-dark-400"
                 >
                   {item.name}
