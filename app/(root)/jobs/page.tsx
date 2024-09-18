@@ -23,7 +23,7 @@ export const metadata: Metadata = {
       "Explore job opportunities tailored for developers. Find openings, apply for roles, and advance your career with listings from top tech companies and startups.",
     images: [
       {
-        url: "/assets/siteImages/jobs.png", // Image path in the public folder
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/jobs.png`, // Image path in the public folder
         width: 1200,
         height: 630,
       },
@@ -36,7 +36,13 @@ export const metadata: Metadata = {
     title: "Jobs | StackOverflow",
     description:
       "Explore job opportunities tailored for developers. Find openings, apply for roles, and advance your career with listings from top tech companies and startups.",
-    images: ["/assets/siteImages/jobs.png"],
+      images: [
+        {
+          url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/jobs.png`, // Image path in the public folder
+          width: 1200,
+          height: 630,
+        },
+      ],
   },
 
   icons: {

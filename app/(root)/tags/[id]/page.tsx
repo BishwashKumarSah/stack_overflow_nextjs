@@ -16,7 +16,7 @@ export const metadata: Metadata = {
       "Discover and browse tags to find questions and discussions related to specific topics. Tags help you filter content by technology, language, or area of interest, making it easier to connect with relevant information and experts.",
     images: [
       {
-        url: "/assets/siteImages/tags.png", // Image path in the public folder
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/tags.png`, // Image path in the public folder
         width: 1200,
         height: 630,
       },
@@ -29,7 +29,13 @@ export const metadata: Metadata = {
     title: "Tags | StackOverflow",
     description:
       "Discover and browse tags to find questions and discussions related to specific topics. Tags help you filter content by technology, language, or area of interest, making it easier to connect with relevant information and experts.",
-    images: ["/assets/siteImages/tags.png"],
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/tags.png`, // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
   },
 
   icons: {

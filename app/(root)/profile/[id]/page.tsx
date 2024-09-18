@@ -26,7 +26,7 @@ export const metadata: Metadata = {
       "View and manage your personal profile. Check out your activity, including your questions, answers, and saved content. Customize your settings, track your contributions, and stay updated with your interactions within the community.",
     images: [
       {
-        url: "/assets/siteImages/profile.png", // Image path in the public folder
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/profile.png`, // Image path in the public folder
         width: 1200,
         height: 630,
       },
@@ -39,7 +39,13 @@ export const metadata: Metadata = {
     title: "Profile | StackOverflow",
     description:
       "View and manage your personal profile. Check out your activity, including your questions, answers, and saved content. Customize your settings, track your contributions, and stay updated with your interactions within the community.",
-    images: ["/assets/siteImages/profile.png"],
+      images: [
+        {
+          url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/profile.png`, // Image path in the public folder
+          width: 1200,
+          height: 630,
+        },
+      ],
   },
 
   icons: {

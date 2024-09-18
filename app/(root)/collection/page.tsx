@@ -22,7 +22,7 @@ export const metadata: Metadata = {
       "View and manage your saved questions here. Easily revisit important discussions and solutions you’ve marked for later reference. Keep track of your favorite posts and find answers quickly.",
     images: [
       {
-        url: "/assets/siteImages/savedQuestions.png", // Image path in the public folder
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/savedQuestions.png`, // Image path in the public folder
         width: 1200,
         height: 630,
       },
@@ -35,7 +35,13 @@ export const metadata: Metadata = {
     title: "Saved Questions | StackOverflow",
     description:
       "View and manage your saved questions here. Easily revisit important discussions and solutions you’ve marked for later reference. Keep track of your favorite posts and find answers quickly.",
-    images: ["/assets/siteImages/savedQuestions.png"],
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/savedQuestions.png`, // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
   },
 
   icons: {

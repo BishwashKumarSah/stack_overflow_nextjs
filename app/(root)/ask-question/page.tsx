@@ -15,7 +15,7 @@ export const metadata: Metadata = {
       "Ask a Question. Have a coding challenge or a technical query? Post your question here and get help from our vibrant community of developers. Whether it's a bug, best practice, or a complex issue, share your problem and receive expert advice, solutions, and insights from experienced professionals and enthusiasts. Join the conversation and find the answers you need to move forward.",
     images: [
       {
-        url: "/assets/siteImages/askquestions.png", // Image path in the public folder
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/askquestions.png`, // Image path in the public folder
         width: 1200,
         height: 630,
       },
@@ -28,7 +28,13 @@ export const metadata: Metadata = {
     title: "Ask a Question | StackOverflow",
     description:
       "Ask a Question. Have a coding challenge or a technical query? Post your question here and get help from our vibrant community of developers. Whether it's a bug, best practice, or a complex issue, share your problem and receive expert advice, solutions, and insights from experienced professionals and enthusiasts. Join the conversation and find the answers you need to move forward.",
-    images: ["/assets/siteImages/askquestions.png"],
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/askquestions.png`, // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
   },
 
   icons: {
