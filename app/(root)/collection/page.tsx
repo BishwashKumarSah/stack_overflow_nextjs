@@ -79,7 +79,7 @@ const Collection = async ({ params, searchParams }: URLProps) => {
         />
       </div>
 
-      <div className="flex w-full flex-col gap-6">
+      <div className="mt-9 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question: any) => {
             return (

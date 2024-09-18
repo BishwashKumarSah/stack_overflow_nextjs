@@ -81,7 +81,7 @@ const Jobs = async ({ params, searchParams }: URLProps) => {
         />
       </div>
 
-      <div className="flex w-full flex-col gap-6">
+      <div className="mt-9 flex w-full flex-col gap-5">
         {jobDetails.length > 0 ? (
           jobDetails.map((jobDetail: any) => {
             return (

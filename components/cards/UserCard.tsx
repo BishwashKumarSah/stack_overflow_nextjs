@@ -21,7 +21,7 @@ const UserCard = async ({ user }: AllUserProps) => {
   });
 
   return (
-    <div className="shadow-light100_darknone background-light900_dark200 light-border flex-center light-border flex w-full flex-col rounded-xl border p-8 max-sm:min-w-full sm:w-[260px]">
+    <div className="shadow-light100_darknone background-light900_dark200 flex-center flex w-full  flex-col rounded-xl border p-8  dark:border-0 max-sm:min-w-full sm:w-[260px]">
       <Link href={`/profile/${user.clerkId}`}>
         <article className="flex-center flex flex-col">
           <Image

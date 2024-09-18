@@ -56,7 +56,7 @@ const JobDetailsCard = ({
   salary,
 }: JobDetailsProps) => {
   return (
-    <section className="background-light900_dark200 light-border shadow-light100_darknone mt-9 flex flex-col items-start gap-6 rounded-lg border p-6 sm:flex-row sm:p-8">
+    <section className="background-light900_dark200 light-border shadow-light100_darknone  flex flex-col items-start gap-6 rounded-lg border p-6 sm:flex-row sm:p-8">
       <div className="flex w-full justify-end sm:hidden">
         <JobLocation location={location} />
       </div>
