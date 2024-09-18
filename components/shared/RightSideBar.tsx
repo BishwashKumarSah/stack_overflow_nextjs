@@ -45,7 +45,7 @@ const RightSideBar = async () => {
                 <RenderTags
                   key={tag._id}
                   title={tag.name}
-                  _id={JSON.stringify(tag._id)}
+                  _id={tag._id}
                   questionsCount={tag.questionscount}
                   showCount
                 />
