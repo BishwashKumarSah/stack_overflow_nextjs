@@ -38,7 +38,8 @@ body {
   }
 
   .markdown {
-    @apply prose dark:prose-h2:text-light-900 dark:prose-h1:text-light-900 dark:prose-h3:text-light-900 dark:prose-a:text-light-900 dark:prose-blockquote:text-light-900 dark:prose-h5:text-light-900 dark:prose-ul:text-light-900 dark:prose-li:text-light-900 dark:prose-headings:text-light-900 dark:prose-ol:text-light-900 dark:prose-p:text-light-700 dark:prose-strong:text-light-900;
+    @apply prose w-full min-w-full break-words mt-9;
+
   }
 
   .primary-gradient {

@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const result = await model.generateContent(
-      `Generate an answer for ${question}. Give in form of proper HTML content Do not use muliple gap. If there is a code block then use a <pre class="language-javascript"> tag. Here javascript can be any language that you are providing code. It is dynamic. Then use a <code> tag inside and render your code. Each point is enclosed in <p> tags for paragraph separation. Bold text is handled with <strong>. If you writing something inside ** ** then always use a <strong> tag. ALWAYS GIVE ME PROPER HTML FORMAT`
+      `Generate an answer for ${question}. Give in form of proper HTML content Do not use muliple gap. Do use back ticks use well structured HTML format. If there is a code block then use a <pre class="language-javascript"> tag. Here javascript can be any language that you are providing code. It is dynamic. Then use a <code> tag inside and render your code. Only use this tag if you are providing the code, otherwise don't. Each point is enclosed in <p> tags for paragraph separation. Bold text is handled with <strong>. If you writing something inside ** ** then always use a <strong> tag. ALWAYS GIVE ME PROPER HTML FORMAT`
     );
     // console.log(result.response.text());
 

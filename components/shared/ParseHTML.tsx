@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import parse from "html-react-parser";
 import Prism from "prismjs";
-
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-java";
 import "prismjs/components/prism-c";
@@ -24,7 +23,6 @@ import "prismjs/components/prism-go";
 import "prismjs/components/prism-bash";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-mongodb";
-
 import "prismjs/plugins/line-numbers/prism-line-numbers.js";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 
@@ -38,7 +36,7 @@ const ParseHTML = ({ content }: Params) => {
   }, []);
 
   return (
-    <div className="markdown text-dark300_light900 mt-9 w-full min-w-full break-words">
+    <div className=" prose mt-9 w-full min-w-full break-words">
       {parse(content)}
     </div>
   );
