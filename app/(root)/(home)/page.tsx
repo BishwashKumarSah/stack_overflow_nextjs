@@ -23,7 +23,7 @@ export const metadata: Metadata = {
       "Welcome to Stack Overflow – the premier destination for developers to ask questions, share knowledge, and find solutions. Join a global community where experts and enthusiasts collaborate to solve coding challenges and advance their skills. Whether you’re troubleshooting a bug or seeking advice on best practices, Stack Overflow connects you with the answers you need.",
     images: [
       {
-        url: `https://${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/home.png`, // Image path in the public folder
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/home.png`, // Image path in the public folder
         width: 1200,
         height: 630,
       },
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
       "Welcome to Stack Overflow – the premier destination for developers to ask questions, share knowledge, and find solutions. Join a global community where experts and enthusiasts collaborate to solve coding challenges and advance their skills. Whether you’re troubleshooting a bug or seeking advice on best practices, Stack Overflow connects you with the answers you need.",
     images: [
       {
-        url: `https://${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/home.png`, // Image path in the public folder
+        url: `${process.env.NEXT_PUBLIC_HOST_URL}/assets/siteImages/home.png`, // Image path in the public folder
         width: 1200,
         height: 630,
       },
