@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formQueryUrl } from "@/lib/utils";
+import Image from "next/image";
 
 interface HomePageFilterProps {
   filters: {
@@ -45,8 +46,10 @@ const Filter = ({ filters, otherClasses, type }: HomePageFilterProps) => {
       >
         <div className="line-clamp-1 flex-1 text-left">
           {type ? (
-            <div className="flex gap-2 items-center">
-              <img
+            <div className="flex items-center gap-2">
+              <Image
+                height={18}
+                width={18}
                 src="/assets/icons/location.svg"
                 alt="GPS"
                 className="mr-2"

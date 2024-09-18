@@ -2,7 +2,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
-import { CountryFilters, QuestionFilters } from "@/constants/filters";
+import { CountryFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -29,6 +29,8 @@ const Jobs = async ({ params, searchParams }: URLProps) => {
     page,
     pageSize,
   });
+
+  
 
   return (
     <Suspense fallback={<Loading />}>
