@@ -15,7 +15,7 @@ const GlobalSearch = () => {
   const query = searchQuery.get("q") || "";
   const globalQuery = searchQuery.get("global") || "";
 
-  const [search, setSearch] = useState(query);
+  const [search] = useState(query);
   const [globalSearch, setGlobalSearch] = useState(globalQuery);
 
   const [isModelOpen, setIsModelOpen] = useState(false);
