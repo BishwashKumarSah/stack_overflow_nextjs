@@ -119,7 +119,7 @@ export const GetQuestionsByTagId = async (
 ) => {
   connectToDatabase();
   try {
-    const { tagId, page = 1, pageSize = 10, searchQuery } = params;
+    const { tagId, searchQuery } = params;
 
     const query: FilterQuery<IQuestion> = {};
     if (searchQuery) {

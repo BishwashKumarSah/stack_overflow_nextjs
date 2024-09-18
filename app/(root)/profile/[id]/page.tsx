@@ -7,7 +7,6 @@ import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-
 import React, { Suspense } from "react";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
@@ -15,6 +14,38 @@ import AnswerTab from "@/components/shared/AnswerTab";
 import ProfileDetailsLoading from "./Loading";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile | StackOverflow",
+  description:
+    "View and manage your personal profile. Check out your activity, including your questions, answers, and saved content. Customize your settings, track your contributions, and stay updated with your interactions within the community.",
+  openGraph: {
+    title: "Profile | StackOverflow",
+    description:
+      "View and manage your personal profile. Check out your activity, including your questions, answers, and saved content. Customize your settings, track your contributions, and stay updated with your interactions within the community.",
+    images: [
+      {
+        url: "/assets/siteImages/profile.png", // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
+    url: "https://stack-overflow-bishwashkumarsahs-projects.vercel.app",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Profile | StackOverflow",
+    description:
+      "View and manage your personal profile. Check out your activity, including your questions, answers, and saved content. Customize your settings, track your contributions, and stay updated with your interactions within the community.",
+    images: ["/assets/siteImages/profile.png"],
+  },
+
+  icons: {
+    icon: "/assets/images/site-logo.svg",
+  },
+};
 
 const ProfileDetails = async ({ params, searchParams }: URLProps) => {
   const {
@@ -118,11 +149,11 @@ const ProfileDetails = async ({ params, searchParams }: URLProps) => {
           </Tabs>
         </div>
         {topTags.length > 0 && (
-          <div className="max-w-[250px] w-full">
+          <div className="w-full max-w-[250px]">
             <h4 className="h3-semibold text-dark300_light700 text-center">
               Top Tags
             </h4>
-            <div className="flex gap-5 flex-col mt-12">
+            <div className="mt-12 flex flex-col gap-5">
               {topTags.length > 0 &&
                 topTags.map((tag, ind) => (
                   <Link

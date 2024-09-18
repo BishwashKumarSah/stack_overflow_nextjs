@@ -1,20 +1,47 @@
 import QuestionCard from "@/components/cards/QuestionCard";
-import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
-import { QuestionFilters } from "@/constants/filters";
-import { getSavedQuestions } from "@/lib/actions/user.action";
 import React from "react";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { URLProps } from "@/types";
 import { GetQuestionsByTagId } from "@/lib/actions/tag.action";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Tags | StackOverflow",
+  description:
+    "Discover and browse tags to find questions and discussions related to specific topics. Tags help you filter content by technology, language, or area of interest, making it easier to connect with relevant information and experts.",
+  openGraph: {
+    title: "Tags | StackOverflow",
+    description:
+      "Discover and browse tags to find questions and discussions related to specific topics. Tags help you filter content by technology, language, or area of interest, making it easier to connect with relevant information and experts.",
+    images: [
+      {
+        url: "/assets/siteImages/tags.png", // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
+    url: "https://stack-overflow-bishwashkumarsahs-projects.vercel.app",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tags | StackOverflow",
+    description:
+      "Discover and browse tags to find questions and discussions related to specific topics. Tags help you filter content by technology, language, or area of interest, making it easier to connect with relevant information and experts.",
+    images: ["/assets/siteImages/tags.png"],
+  },
+
+  icons: {
+    icon: "/assets/images/site-logo.svg",
+  },
+};
 
 const TagsQuestions = async ({ params, searchParams }: URLProps) => {
-  const searchQuery = searchParams.q
+  const searchQuery = searchParams.q;
   const { tagTitle, questions } = await GetQuestionsByTagId({
     tagId: params.id,
-    searchQuery
+    searchQuery,
   });
 
   return (
@@ -31,7 +58,7 @@ const TagsQuestions = async ({ params, searchParams }: URLProps) => {
         />
       </div>
 
-      <div className="flex w-full flex-col gap-6">
+      <div className="mt-11 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question: any) => {
             return (

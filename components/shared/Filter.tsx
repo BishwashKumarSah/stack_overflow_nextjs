@@ -68,7 +68,7 @@ const Filter = ({ filters, otherClasses, type }: HomePageFilterProps) => {
               return (
                 <SelectItem
                   key={item.value}
-                  value={type ? item.name : item.value}
+                  value={item.value}
                   className="text-dark300_light700 items-start hover:bg-light-700 dark:hover:bg-dark-400"
                 >
                   {item.name}

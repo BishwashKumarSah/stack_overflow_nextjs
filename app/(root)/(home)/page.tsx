@@ -11,6 +11,40 @@ import { URLProps } from "@/types";
 import Link from "next/link";
 import React, { Suspense } from "react";
 import Loading from "./Loading";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Home | StackOverflow",
+  description:
+    "Welcome to Stack Overflow – the premier destination for developers to ask questions, share knowledge, and find solutions. Join a global community where experts and enthusiasts collaborate to solve coding challenges and advance their skills. Whether you’re troubleshooting a bug or seeking advice on best practices, Stack Overflow connects you with the answers you need.",
+  openGraph: {
+    title: "Home | StackOverflow",
+    description:
+      "Welcome to Stack Overflow – the premier destination for developers to ask questions, share knowledge, and find solutions. Join a global community where experts and enthusiasts collaborate to solve coding challenges and advance their skills. Whether you’re troubleshooting a bug or seeking advice on best practices, Stack Overflow connects you with the answers you need.",
+    images: [
+      {
+        url: "/assets/siteImages/home.png", // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
+    url: "https://stack-overflow-bishwashkumarsahs-projects.vercel.app",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Home | StackOverflow",
+    description:
+      "Welcome to Stack Overflow – the premier destination for developers to ask questions, share knowledge, and find solutions. Join a global community where experts and enthusiasts collaborate to solve coding challenges and advance their skills. Whether you’re troubleshooting a bug or seeking advice on best practices, Stack Overflow connects you with the answers you need.",
+    images: [
+      "/assets/siteImages/home.png", // Image path in the public folder
+    ],
+  },
+
+  icons: {
+    icon: "/assets/images/site-logo.svg", // Path to the favicon or site logo
+  },
+};
 
 const Home = async ({ params, searchParams }: URLProps) => {
   const searchQuery = searchParams.q;
@@ -25,7 +59,6 @@ const Home = async ({ params, searchParams }: URLProps) => {
     pageSize,
   });
 
-  
   return (
     <Suspense fallback={<Loading />}>
       <div className="flex w-full justify-between max-sm:flex-col-reverse sm:items-center">
@@ -50,9 +83,9 @@ const Home = async ({ params, searchParams }: URLProps) => {
         />
       </div>
       <HomeFilters />
-      <div className="flex w-full flex-col gap-6">
+      <div className="mt-9 flex w-full flex-col gap-5">
         {questions.length > 0 ? (
-          questions.map((question:any) => {
+          questions.map((question: any) => {
             return (
               <QuestionCard
                 key={question._id}

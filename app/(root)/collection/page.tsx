@@ -10,6 +10,38 @@ import { URLProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 import Loading from "./Loading";
 import { Suspense } from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Saved Questions | StackOverflow",
+  description:
+    "View and manage your saved questions here. Easily revisit important discussions and solutions you’ve marked for later reference. Keep track of your favorite posts and find answers quickly.",
+  openGraph: {
+    title: "Saved Questions | StackOverflow",
+    description:
+      "View and manage your saved questions here. Easily revisit important discussions and solutions you’ve marked for later reference. Keep track of your favorite posts and find answers quickly.",
+    images: [
+      {
+        url: "/assets/siteImages/savedQuestions.png", // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
+    url: "https://stack-overflow-bishwashkumarsahs-projects.vercel.app",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Saved Questions | StackOverflow",
+    description:
+      "View and manage your saved questions here. Easily revisit important discussions and solutions you’ve marked for later reference. Keep track of your favorite posts and find answers quickly.",
+    images: ["/assets/siteImages/savedQuestions.png"],
+  },
+
+  icons: {
+    icon: "/assets/images/site-logo.svg",
+  },
+};
 
 const Collection = async ({ params, searchParams }: URLProps) => {
   const { userId }: { userId: string | null } = auth();

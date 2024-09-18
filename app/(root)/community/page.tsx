@@ -9,6 +9,38 @@ import { URLProps } from "@/types";
 import Link from "next/link";
 import React, { Suspense } from "react";
 import Loading from "./loading";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Community | StackOverflow",
+  description:
+    "Join our vibrant community of developers and tech enthusiasts. Engage in discussions, share your knowledge, and connect with others who are passionate about coding and technology. Get involved in conversations, ask questions, and contribute to a supportive network of peers.",
+  openGraph: {
+    title: "Community | StackOverflow",
+    description:
+      "Join our vibrant community of developers and tech enthusiasts. Engage in discussions, share your knowledge, and connect with others who are passionate about coding and technology. Get involved in conversations, ask questions, and contribute to a supportive network of peers.",
+    images: [
+      {
+        url: "/assets/siteImages/community.png", // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
+    url: "https://stack-overflow-bishwashkumarsahs-projects.vercel.app",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Community | StackOverflow",
+    description:
+      "Join our vibrant community of developers and tech enthusiasts. Engage in discussions, share your knowledge, and connect with others who are passionate about coding and technology. Get involved in conversations, ask questions, and contribute to a supportive network of peers.",
+    images: ["/assets/siteImages/community.png"],
+  },
+
+  icons: {
+    icon: "/assets/images/site-logo.svg",
+  },
+};
 
 const Community = async ({ params, searchParams }: URLProps) => {
   const searchQuery = searchParams.q;
@@ -22,7 +54,6 @@ const Community = async ({ params, searchParams }: URLProps) => {
     pageSize,
   });
 
-  
   return (
     <Suspense fallback={<Loading />}>
       <h1 className="h1-bold text-dark100_light900">All Users</h1>

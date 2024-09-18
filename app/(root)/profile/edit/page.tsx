@@ -10,7 +10,7 @@ const EditProfile = async () => {
     redirect("/sign-in");
   }
   const { user: mongoUser } = await getUserById({ userId });
- 
+
   return (
     <div className="w-full ">
       <h1 className="h1-bold text-dark100_light900">Edit Profile</h1>

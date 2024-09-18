@@ -41,9 +41,9 @@ const Community = async ({ params, searchParams }: URLProps) => {
       <section className="mt-9  flex-1">
         {allTags.length > 0 ? (
           <div className="flex flex-wrap justify-evenly gap-5 ">
-            {allTags.map((tag:any) => (
+            {allTags.map((tag: any) => (
               <Link href={`/tags/${tag._id}`} key={tag._id}>
-                <article className="background-light900_dark200 light-border flex w-full flex-col rounded-2xl border px-8 py-10 sm:w-[260px]">
+                <article className="background-light900_dark200 dark:dark-gradient flex w-full flex-col rounded-2xl border border-light-700 bg-light-900 px-8 py-10 shadow-light-100 sm:w-[260px]">
                   <div className="background-light800_dark400 w-fit rounded-sm px-5 py-1.5">
                     <p className="paragraph-semibold text-dark300_light900">
                       {tag.name.toUpperCase()}

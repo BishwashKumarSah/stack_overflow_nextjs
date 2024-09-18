@@ -1,15 +1,48 @@
-import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { CountryFilters } from "@/constants/filters";
-import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { URLProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 import Loading from "./Loading";
 import { Suspense } from "react";
+import { getJobDetails } from "@/lib/actions/job.action";
+import JobDetailsCard from "@/components/cards/JobDetailsCard";
+
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Jobs | StackOverflow",
+  description:
+    "Explore job opportunities tailored for developers. Find openings, apply for roles, and advance your career with listings from top tech companies and startups.",
+  openGraph: {
+    title: "Jobs | StackOverflow",
+    description:
+      "Explore job opportunities tailored for developers. Find openings, apply for roles, and advance your career with listings from top tech companies and startups.",
+    images: [
+      {
+        url: "/assets/siteImages/jobs.png", // Image path in the public folder
+        width: 1200,
+        height: 630,
+      },
+    ],
+    url: "https://stack-overflow-bishwashkumarsahs-projects.vercel.app",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jobs | StackOverflow",
+    description:
+      "Explore job opportunities tailored for developers. Find openings, apply for roles, and advance your career with listings from top tech companies and startups.",
+    images: ["/assets/siteImages/jobs.png"],
+  },
+
+  icons: {
+    icon: "/assets/images/site-logo.svg",
+  },
+};
 
 const Jobs = async ({ params, searchParams }: URLProps) => {
   const { userId }: { userId: string | null } = auth();
@@ -22,15 +55,13 @@ const Jobs = async ({ params, searchParams }: URLProps) => {
   const filter = searchParams.filter;
   const page = searchParams?.page ? +searchParams.page : 1;
   const pageSize = 20;
-  const { questions, totalButtons } = await getSavedQuestions({
-    clerkId: userId,
+
+  const { jobDetails, totalButtons } = await getJobDetails({
     searchQuery,
-    filter,
+    filter: filter?.toLocaleLowerCase(),
     page,
     pageSize,
   });
-
-  
 
   return (
     <Suspense fallback={<Loading />}>
@@ -51,19 +82,20 @@ const Jobs = async ({ params, searchParams }: URLProps) => {
       </div>
 
       <div className="flex w-full flex-col gap-6">
-        {questions.length > 0 ? (
-          questions.map((question: any) => {
+        {jobDetails.length > 0 ? (
+          jobDetails.map((jobDetail: any) => {
             return (
-              <QuestionCard
-                key={question._id}
-                _id={question._id}
-                title={question.title}
-                tags={question.tags}
-                votes={question.upvotes.length}
-                answers={question.answers}
-                views={question.views}
-                author={question.author}
-                createdAt={question.createdAt}
+              <JobDetailsCard
+                key={jobDetail._id}
+                _id={jobDetail._id}
+                url={jobDetail.url}
+                companyName={jobDetail.companyName}
+                title={jobDetail.title}
+                type={jobDetail.type}
+                description={jobDetail.description}
+                location={jobDetail.location}
+                salary={jobDetail.salary}
+                createdAt={jobDetail.createdAt}
               />
             );
           })

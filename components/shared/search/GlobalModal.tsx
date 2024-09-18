@@ -90,7 +90,7 @@ const GlobalModal = () => {
                 </Link>
               ))
             ) : (
-              <div className="flex flex-center flex-col">
+              <div className="flex-center flex flex-col">
                 <span className="text-[50px]">🫣</span>{" "}
                 <p className="body-medium text-dark200_light800">
                   Oops, no results found

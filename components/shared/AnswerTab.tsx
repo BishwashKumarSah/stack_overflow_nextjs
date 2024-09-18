@@ -12,7 +12,7 @@ interface AnswerTabProps {
 
 const AnswerTab = async (props: AnswerTabProps) => {
   const { userId, page, pageSize, clerkId } = props;
-  const { totalAnswers, answers, totalButtons } = await getUserAnswers({
+  const { answers, totalButtons } = await getUserAnswers({
     userId: JSON.parse(userId),
     page,
     pageSize,
