@@ -124,7 +124,6 @@ Notes
 - **Clerk Authentication:** Create a Clerk account [here](https://clerk.com/) and set the `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` environment variables in the `.env.local` file. Configure different URLs for Clerk sign-in, sign-up, after sign-in, and after sign-up pages.
 - **MongoDB Database:** Create a MongoDB database and connect it to the application. Change the `MONGO_DB_URI` environment variable in the `.env.local` file.
 - **TinyMCE**: Create a TinyMCE account [here](https://www.tiny.cloud/) and set the `NEXT_PUBLIC_TINY_EDITOR_API_KEY` environment variable in the `.env.local` file.
-- **OpenAI API:** Create an OpenAI account here and set the `OPENAI_API_KEY` environment variable in the `.env.local` file.
 - After deploy, create a new webhook on Clerk, add the endpoint of `http://<Your-deployed-link>/api/webhook`, set `user` events, and set the `NEXT_CLERK_WEBHOOK_SECRET` environment variable in the `.env.local` file.
 
 
