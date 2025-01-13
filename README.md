@@ -1,13 +1,13 @@
 <div id="top"></div>
 
 <div align="center">
-  <h1 align="center">DevOverflow - Full Stack Next.js 14 App</h1>
+  <h1 align="center">StackOverflow - Full Stack Next.js 14 App</h1>
 
 
 
 > ~
 >
-> <h3 align="center">Welcome to DevOverflow, a full-stack application built with Next.js 14 and Server Actions, featuring an array of powerful functionalities to enhance your developer community experience. DevOverflow is designed to be a comprehensive platform for developers to ask questions, share knowledge, and engage in a thriving community.</h3>
+> <h3 align="center">Welcome to Stack Overflow, a full-stack application built with Next.js 14 and Server Actions, featuring an array of powerful functionalities to enhance your developer community experience. Stack Overflow is designed to be a comprehensive platform for developers to ask questions, share knowledge, and engage in a thriving community.</h3>
 
 > <p align="center">
 >   <img src="https://img.shields.io/badge/NextJS-black?style=for-the-badge&logo=next.js&logoColor=white" />
@@ -23,11 +23,7 @@
 </div>
 
 
-## Test credentials
 
-| Username  | Password |
-| ------------- | ------------- |
-| test  | mysecurepass123  |
 
 
 ## 🚀 Features
@@ -67,8 +63,8 @@
 
 ## 🚀 Author
 
-- Linkedin: Melvin Aguilar - [Linkedin: Melvin Aguilar](https://www.linkedin.com/in/melvinaguilar)
-- GitHub [@melvinaguilar](https://github.com/MelvinAguilar)
+- Linkedin: Bishwash Kumar Sah - [Linkedin: Bishwash Kumar Sah](https://www.linkedin.com/in/bishwash-kumar-sah-3462612b1/)
+- GitHub [@BishwashKumarSah](https://github.com/BishwashKumarSah)
 
 ## 🛠️ Run the project
 
@@ -128,6 +124,4 @@ Notes
 - **OpenAI API:** Create an OpenAI account here and set the `OPENAI_API_KEY` environment variable in the `.env.local` file.
 - After deploy, create a new webhook on Clerk, add the endpoint of `http://<Your-deployed-link>/api/webhook`, set `user` events, and set the `NEXT_CLERK_WEBHOOK_SECRET` environment variable in the `.env.local` file.
 
-## 📝 References
 
-[JSMastery. (2023). Ultimate Next.js 14 Course | Become a top 1% Next.js 14 developer.](https://www.jsmastery.pro/ultimate-next-course) E-Learning.
