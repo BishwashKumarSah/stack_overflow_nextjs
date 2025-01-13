@@ -94,26 +94,29 @@ bun dev
 - Create a `.env.local` file in the root directory of the project and add the following environment variables:
 
 ```
-# Clerk secrets for api key and webhook
+# Clerk secrets for API key and webhook
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 NEXT_CLERK_WEBHOOK_SECRET=
 
-# Clerk routes
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+# Google AI
+GOOGLEAI_API_KEY=
 
-#  Tiny editor
-NEXT_PUBLIC_TINY_EDITOR_API_KEY=
+# Apify
+JOBS_APIFY_API_KEY=
 
 # Database
-MONGO_DB_URI=
+MONGODB_URI=
 
-# OpenAI and public secrets
-NEXT_PUBLIC_SERVER_URL=http://localhost:3000
-OPENAI_API_KEY=
+# Webhook
+NEXT_WEBHOOK_SECRET=
+
+# Host URL
+NEXT_PUBLIC_HOST_URL=
+
+# Tiny editor
+NEXT_PUBLIC_TINY_API_KEY=
+
 ```
 
 Notes
