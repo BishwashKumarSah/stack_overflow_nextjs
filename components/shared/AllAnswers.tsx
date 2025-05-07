@@ -12,9 +12,10 @@ import { ObjectId } from "mongodb";
 interface Props {
   questionId: string;
   questionCount: number;
-  userId: string;
+  userId?: string; // Optional now
   filter?: string;
 }
+
 const AllAnswers = async (params: Props) => {
   const { questionCount, questionId, userId, filter } = params;
 
@@ -26,6 +27,7 @@ const AllAnswers = async (params: Props) => {
         <h3 className="primary-text-gradient">{questionCount} Answers</h3>
         <Filter filters={AnswerFilters} otherClasses="w-[170px] max-md:flex" />
       </div>
+
       <div>
         {allAnswers.length > 0 &&
           allAnswers.map((answer) => (
@@ -54,26 +56,32 @@ const AllAnswers = async (params: Props) => {
                     </div>
                   </Link>
                 </div>
+
                 <div>
                   <Voting
                     type="Answer"
                     itemId={JSON.stringify(answer._id)}
-                    userId={JSON.stringify(userId)}
-                    upvotes={answer.upvotes.length}
-                    hasUpVoted={answer.upvotes.some((id: ObjectId) => {
-                      const upvoteId = id.toString(); // Convert ObjectId to string
-                      const cleanUserId = userId.toString(); // Ensure userId is also a string
-                      return upvoteId === cleanUserId; // Compare as strings
-                    })}
-                    hasDownVoted={answer.downvotes.some((id: ObjectId) => {
-                      const downvoteId = id.toString(); // Convert ObjectId to string
-                      const cleanUserId = userId.toString(); // Ensure userId is also a string
-                      return downvoteId === cleanUserId; // Compare as strings
-                    })}
-                    downvotes={answer.downvotes.length}
+                    userId={userId ? JSON.stringify(userId) : ""}
+                    upvotes={answer.upvotes?.length || 0}
+                    hasUpVoted={
+                      !!userId &&
+                      Array.isArray(answer.upvotes) &&
+                      answer.upvotes.some((id: ObjectId) => {
+                        return id?.toString?.() === userId?.toString();
+                      })
+                    }
+                    hasDownVoted={
+                      !!userId &&
+                      Array.isArray(answer.downvotes) &&
+                      answer.downvotes.some((id: ObjectId) => {
+                        return id?.toString?.() === userId?.toString();
+                      })
+                    }
+                    downvotes={answer.downvotes?.length || 0}
                   />
                 </div>
               </div>
+
               <ParseHTML content={answer.content} />
             </article>
           ))}
